@@ -6,9 +6,10 @@ import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 import Prelude;
 import String;
-import codeLines;
-import cyclomaticComplexity;
 
+import codeLines;
+import duplication;
+import cyclomaticComplexity;
 
 public void main() {
 	loc project = |project://smallsql0.21_src|;
