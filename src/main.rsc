@@ -10,7 +10,7 @@ import String;
 import codeLines;
 
 public void main() {
-	M3 model = createM3FromEclipseProject(|project://smallsql0.21_src2|);
+	M3 model = createM3FromEclipseProject(|project://smallsql0.21_src|);
 	set[loc] allProjectFiles = files(model);
 	
 	int volume = size(extractCodeFromFiles(allProjectFiles));

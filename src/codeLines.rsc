@@ -5,7 +5,7 @@ import Prelude;
 import String;
 
 
-public list[str] extractCodeFromFiles(projectFiles) {
+public list[str] extractCodeFromFiles(set[loc] projectFiles) {
 	list[str] rawLines = extractRawFromFiles(projectFiles);
 	list[str] codeLines = extractCodeLines(rawLines);
 	return codeLines;
