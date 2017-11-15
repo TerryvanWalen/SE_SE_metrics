@@ -8,7 +8,7 @@ import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
 
-public list[str] extractCodeFromFiles(projectFiles) {
+public list[str] extractCodeFromFiles(set[loc] projectFiles) {
 	list[str] rawLines = extractRawFromFiles(projectFiles);
 	list[str] codeLines = extractCodeLines(rawLines);
 	return codeLines;
