@@ -5,30 +5,71 @@ import lang::java::m3::AST;
 import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
+import util::Math;
 import Prelude;
 import String;
+import codeLines;
 
-public void main() {
-	loc project = |project://smallsql0.21_src2|;
+public str compute(int volume, loc project) {
+	println("CC volume: <volume>");
 	set[Declaration] asts = createAstsFromEclipseProject(project, true);
+	
+	map[str, int] resultMap = ();
+	resultMap["simple"] = 0;
+	resultMap["moderate"] = 0;
+	resultMap["high"] = 0;
+	resultMap["very high"] = 0;
+	int separate = 0;
 	visit (asts) {
 		case stn:\method(Type \return, str name, list[Declaration] parameters, list[Expression] exceptions, Statement impl): {
-			// here when the method matches I want to know how many lines of code are in the method
-			println(stn.src);
 			res = computeCC(impl, size(exceptions));
-			println("CC for:<name> is <res>");
+			methodSize = readFileLines(stn.src);
+			separate += size(methodSize);
+			complexity = getComplexity(res);
+			resultMap[complexity] += size(methodSize);
 		}
 	}
+	
+	for (a <- resultMap) {
+		println("Complexity: <a> and LOC: <resultMap[a]>, that is <percent(resultMap[a], volume)> percent");
+		resultMap[a] = percent(resultMap[a], volume);
+	}
+	
+	println("separate LOC: <separate>");
+	
+	return getGrade(resultMap);
+}
+
+private str getGrade(map[str, int] resultMap) {
+	if (resultMap["moderate"] <= 25 && resultMap["high"] == 0 && resultMap["very high"] == 0)
+		return "++";
+	if (resultMap["moderate"] <= 30 && resultMap["high"] <= 5 && resultMap["very high"] == 0)
+		return "+";
+	if (resultMap["moderate"] <= 40 && resultMap["high"] <= 10 && resultMap["very high"] == 0)
+		return "o";
+	if (resultMap["moderate"] <= 50 || resultMap["high"] <= 15 || resultMap["very high"] <= 5)
+		return "-";
+	return "--";
+}
+
+private str getComplexity(int CC) {
+	if (CC <= 10) 
+		return "simple";
+	if (CC <= 20)
+		return "moderate";
+	if (CC <= 50)
+		return "high";
+	return "very high";
 }
 
 // Computes the Cyclomatic Complexity of a method
 // Based on: https://www.leepoint.net/principles_and_practices/complexity/complexity-java-method.html
 // Start with a CC of 1 and then add 1 for each of the following:
-// Returns	Each return that isn't the last statement of a method. Still TODO
-// Selection	if, else, case, default.
-// Loops	for, while, do-while, break, and continue.
-// Operators	&&, ||, ?, and :
-// Exceptions	catch, finally, throw, or throws clause.
+// Returns: Each return that isn't the last statement of a method. Still TODO
+// Selection: if, else, case, default.
+// Loops: for, while, do-while, break, and continue.
+// Operators: &&, ||, ?, and :
+// Exceptions: catch, finally, throw, or throws clause.
 public int computeCC(Statement statements, int noOfThrows) {
 	//println("number of throws clauses: <noOfThrows>");
 	int CC = 1;
@@ -43,7 +84,7 @@ public int computeCC(Statement statements, int noOfThrows) {
 			CC += 2 + countExpressions(condition);
 		}
 		case \case(Expression expression): {
-			CC += 1 + countExpressions(condition);
+			CC += 1 + countExpressions(expression);
 		}
 		case defaultCase(): {
 			CC += 1;
@@ -83,7 +124,7 @@ public int computeCC(Statement statements, int noOfThrows) {
 	return CC;
 }
 
-public int countExpressions(Expression expr) {
+private int countExpressions(Expression expr) {
 	int count = 0;
 	visit (expr) {	
 		case \infix(Expression lhs, str operator, Expression rhs): {	
