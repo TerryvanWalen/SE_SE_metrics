@@ -11,8 +11,8 @@ import cyclomaticComplexity;
 
 
 public void main() {
-	//loc project = |project://smallsql0.21_src|;
-	loc project = |project://hsqldb-2.3.1|;
+	loc project = |project://smallsql0.21_src|;
+	//loc project = |project://hsqldb-2.3.1|;
 	//loc project = |project://rascal|; 
 	//loc project = |project://smallsql0.21_src2|;
 	int volume = LOCInProject(project);

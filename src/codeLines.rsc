@@ -27,7 +27,7 @@ private list[str] extractRawFromFiles(set[loc] files) {
 }
 
 // Problem, this solution does not recognize unproperly formatted multiline comments.
-private list[str] extractCodeLines(list[str] lines) {
+public list[str] extractCodeLines(list[str] lines) {
 	return ([]| it + line | x <- lines, /^\s*<line:[^\/|*|\s]+.*>$/ := x);
 }
 

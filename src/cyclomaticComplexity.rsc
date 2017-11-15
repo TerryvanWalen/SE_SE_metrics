@@ -10,34 +10,57 @@ import Prelude;
 import String;
 import codeLines;
 
-public str compute(int volume, loc project) {
+public map[str, str] compute(int volume, loc project) {
 	println("CC volume: <volume>");
 	set[Declaration] asts = createAstsFromEclipseProject(project, true);
 	
-	map[str, int] resultMap = ();
-	resultMap["simple"] = 0;
-	resultMap["moderate"] = 0;
-	resultMap["high"] = 0;
-	resultMap["very high"] = 0;
+	map[str, int] resultCC, resultUS;
+	resultCC = getEmptyComplexityMap();
+	resultUS = getEmptyComplexityMap();
+	
 	int separate = 0;
 	visit (asts) {
 		case stn:\method(Type \return, str name, list[Declaration] parameters, list[Expression] exceptions, Statement impl): {
 			res = computeCC(impl, size(exceptions));
-			methodSize = readFileLines(stn.src);
-			separate += size(methodSize);
-			complexity = getComplexity(res);
-			resultMap[complexity] += size(methodSize);
+			
+			methodSource = readFileLines(stn.src);
+			methodSize = size(methodSource);
+			methodSizeC = size(extractCodeLines(methodSource));
+
+			separate += methodSizeC;
+			complexityCC = getComplexityCC(res);
+			complexityUS = getComplexityUS(methodSizeC);
+			
+			resultUS[complexityUS] += methodSizeC;
+			resultCC[complexityCC] += methodSizeC;
 		}
 	}
 	
-	for (a <- resultMap) {
-		println("Complexity: <a> and LOC: <resultMap[a]>, that is <percent(resultMap[a], volume)> percent");
-		resultMap[a] = percent(resultMap[a], volume);
+	println();
+	println("Cyclomatic complexity:");
+	for (a <- resultCC) {
+		println("<a> <resultCC[a]>: lines of code, <percent(resultCC[a], volume)> percent");
+		resultCC[a] = percent(resultCC[a], volume);
 	}
+	println();
 	
+	println("Unit size complexity");
+	for (a <- resultUS) {
+		println("<a> <resultUS[a]>: lines of code, <percent(resultUS[a], volume)> percent");
+		resultUS[a] = percent(resultUS[a], volume);
+	}
+
 	println("separate LOC: <separate>");
-	
-	return getGrade(resultMap);
+	return ("US":getGrade(resultCC), "CC":getGrade(resultUS));
+}
+
+private map[str, int] getEmptyComplexityMap() {
+	map[str, int] result = ();
+	result["simple"] = 0;
+	result["moderate"] = 0;
+	result["high"] = 0;
+	result["very high"] = 0;
+	return result;
 }
 
 private str getGrade(map[str, int] resultMap) {
@@ -52,12 +75,28 @@ private str getGrade(map[str, int] resultMap) {
 	return "--";
 }
 
-private str getComplexity(int CC) {
+/**
+* Returns the complexity according to the cyclomatic complexity number
+*/
+private str getComplexityCC(int CC) {
 	if (CC <= 10) 
 		return "simple";
 	if (CC <= 20)
 		return "moderate";
 	if (CC <= 50)
+		return "high";
+	return "very high";
+}
+
+/**
+* Returns the complexity according to the cyclomatic complexity number
+*/
+private str getComplexityUS(int us) {
+	if (us <= 30) 
+		return "simple";
+	if (us <= 44)
+		return "moderate";
+	if (us <= 74)
 		return "high";
 	return "very high";
 }
