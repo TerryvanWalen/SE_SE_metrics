@@ -10,6 +10,7 @@ public list[str] extractCodeFromFiles(set[loc] projectFiles) {
 	list[str] codeLines = extractCodeLines(rawLines);
 	return codeLines;
 }
+public list[str] extractCodeFromFiles(loc projectFile) = extractCodeFromFiles({projectFile});
 
 private list[str] extractRawFromFiles(set[loc] files) {
 	list[str] lines = [];
