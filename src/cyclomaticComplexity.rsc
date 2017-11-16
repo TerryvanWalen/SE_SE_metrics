@@ -25,7 +25,7 @@ public map[str, str] compute(int volume, loc project) {
 			
 			methodSource = readFileLines(stn.src);
 			methodSize = size(methodSource);
-			methodSizeC = size(extractCodeLines(methodSource));
+			methodSizeC = size(extractCodeLinesAlt(methodSource));
 
 			separate += methodSizeC;
 			complexityCC = getComplexityCC(res);

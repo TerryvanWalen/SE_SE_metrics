@@ -8,9 +8,14 @@ import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
 
+public int LOCInProject(M3 model) {
+	set[loc] allProjectFiles = files(model);
+	return size(extractCodeFromFiles(allProjectFiles));
+}
+
 public list[str] extractCodeFromFiles(set[loc] projectFiles) {
 	list[str] rawLines = extractRawFromFiles(projectFiles);
-	list[str] codeLines = extractCodeLines(rawLines);
+	list[str] codeLines = extractCodeLinesAlt(rawLines);
 	return codeLines;
 }
 public list[str] extractCodeFromFiles(loc projectFile) = extractCodeFromFiles({projectFile});
@@ -28,13 +33,13 @@ private list[str] extractRawFromFiles(set[loc] files) {
 }
 
 // Problem, this solution does not recognize unproperly formatted multiline comments.
-public list[str] extractCodeLines(list[str] lines) {
+public list[str] extractCodeLinesAlt(list[str] lines) {
 	//lines = removeBlockComments(lines);
 	//return ([]| it + line | x <- lines, /^\s*<line:[^\/|*|\s]+.*>$/ := x);
 	return cleanCode(lines);
 }
 
-public list[str] extractCodeLinesReg(list[str] lines) {
+public list[str] extractCodeLines(list[str] lines) {
 	return ([]| it + line | x <- lines, /^\s*<line:[^\/|*|\s]+.*>$/ := x);
 }
 
@@ -89,4 +94,5 @@ private list[str] addNewLine(list[str] lines, str line) {
 	if (!startsWith(trim(line), "//") && trim(line) != "")
 		lines += line;
 	return lines;
+
 }
