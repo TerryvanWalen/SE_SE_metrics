@@ -29,6 +29,12 @@ private list[str] extractRawFromFiles(set[loc] files) {
 
 // Problem, this solution does not recognize unproperly formatted multiline comments.
 public list[str] extractCodeLines(list[str] lines) {
+	//lines = removeBlockComments(lines);
+	//return ([]| it + line | x <- lines, /^\s*<line:[^\/|*|\s]+.*>$/ := x);
+	return cleanCode(lines);
+}
+
+public list[str] extractCodeLinesReg(list[str] lines) {
 	return ([]| it + line | x <- lines, /^\s*<line:[^\/|*|\s]+.*>$/ := x);
 }
 
@@ -36,4 +42,51 @@ public int LOCInProject(loc project) {
 	M3 model = createM3FromEclipseProject(project);
 	set[loc] allProjectFiles = files(model);
 	return size(extractCodeFromFiles(allProjectFiles));
+}
+
+public list[str] cleanCode(list[str] lines) {
+	list[str] newLines = [];
+	str newLine;
+	bool block = false;
+	str beforeC, afterC;
+	int pos = 0;
+	for (line <- lines) {
+		if (contains(line, "/*") && !contains(line, "*/")) {
+			block = true;
+			newLine = substring(line, 0, findFirst(line, "/*"));
+			newLines = addNewLine(newLines, newLine);
+		}
+		
+		if (!block) {
+			newLines = addNewLine(newLines, line);
+		}
+		
+		if (!contains(line, "/*") && contains(line, "*/")) {
+			newLine = substring(line, findFirst(line, "*/") + 2, size(line));
+			newLines = addNewLine(newLines, newLine);
+			block = false;
+		}
+		
+		//if (startsWith(trim(line), "/*")) {
+		//	block = true;
+		//}	
+		//if (!block)
+		//	newLines += line;
+		//
+		//pos = findFirst(line, "*/");
+		//if (pos != -1) {
+		//	block = false;
+		//	newLine = substring(line, pos + 2, size(line));
+		//	println("**<line>");
+		//	println("***<newLine>");
+		//	newLines += newLine;
+		//}	
+	}
+	return newLines;
+}
+
+private list[str] addNewLine(list[str] lines, str line) {
+	if (!startsWith(trim(line), "//") && trim(line) != "")
+		lines += line;
+	return lines;
 }
