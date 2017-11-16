@@ -8,6 +8,11 @@ import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
 
+public int LOCInProject(M3 model) {
+	set[loc] allProjectFiles = files(model);
+	return size(extractCodeFromFiles(allProjectFiles));
+}
+
 public list[str] extractCodeFromFiles(set[loc] projectFiles) {
 	list[str] rawLines = extractRawFromFiles(projectFiles);
 	list[str] codeLines = extractCodeLines(rawLines);
@@ -30,10 +35,4 @@ private list[str] extractRawFromFiles(set[loc] files) {
 // Problem, this solution does not recognize unproperly formatted multiline comments.
 public list[str] extractCodeLines(list[str] lines) {
 	return ([]| it + line | x <- lines, /^\s*<line:[^\/|*|\s]+.*>$/ := x);
-}
-
-public int LOCInProject(loc project) {
-	M3 model = createM3FromEclipseProject(project);
-	set[loc] allProjectFiles = files(model);
-	return size(extractCodeFromFiles(allProjectFiles));
 }
