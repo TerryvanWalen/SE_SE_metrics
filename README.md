@@ -35,13 +35,16 @@ The algorithm starts with a 1 and then adds 1 for each of the following:
  - Exceptions: catch, finally, either throw or throws clause
 
 ### From numbers to score
+
 | CC    | Risk evaluation             |
+| ----- |:---------------------------:|
 | 1-10  | simple, without much risk   |
 | 11-20 | more complex, moderate risk |
 | 21-50 | complex, high risk          |
 | >50   | untestable, very high risk  |
 
 | Rank | moderate | high | very high |
+| ---- |:--------:|:----:|:---------:|
 |  ++  | 25%      | 0%   | 0%        |
 |  +   | 30%      | 5%   | 0%        |
 |  o   | 40%      | 10%  | 0%        |
@@ -56,12 +59,14 @@ Finally, the unit size is obtained by counting the number of lines left in the b
 
 ### From numbers to score
 | CC    | Risk evaluation             |
+| ----- |:---------------------------:|
 | 1-30  | simple, without much risk   |
 | 30-44 | more complex, moderate risk |
 | 44-74 | complex, high risk          |
 | >74   | very high risk              |
 
 | Rank | moderate | high | very high |
+| ---- |:--------:|:----:|:---------:|
 |  ++  | 25%      | 0%   | 0%        |
 |  +   | 30%      | 5%   | 0%        |
 |  o   | 40%      | 10%  | 0%        |
@@ -74,6 +79,7 @@ When comparing code lines, we ignore leading spaces. So, if a single line is rep
 If however, a group of 6 lines appears unchanged in more than one place, we count it as duplicated. Apart from removing leading spaces, the duplication we measure is an exact string matching duplication.
 
 | Rank | duplication |
+| ---- |:-----------:|
 |  ++  | 0-3%        |
 |  +   | 3-5%        |
 |  o   | 5-10%       |
