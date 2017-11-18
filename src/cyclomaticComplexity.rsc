@@ -11,7 +11,6 @@ import String;
 import codeLines;
 
 public map[str, str] compute(int volume, loc project) {
-	println("CC volume: <volume>");
 	set[Declaration] asts = createAstsFromEclipseProject(project, true);
 	
 	map[str, int] resultCC, resultUS;
@@ -21,18 +20,13 @@ public map[str, str] compute(int volume, loc project) {
 	int separate = 0;
 	visit (asts) {
 		case stn:\method(Type \return, str name, list[Declaration] parameters, list[Expression] exceptions, Statement impl): {
-			res = computeCC(impl, size(exceptions));
+			cc = computeCC(impl, size(exceptions));
 			
-			methodSource = readFileLines(stn.src);
-			methodSize = size(methodSource);
-			methodSizeC = size(extractCodeLinesAlt(methodSource));
-
-			separate += methodSizeC;
-			complexityCC = getComplexityCC(res);
-			complexityUS = getComplexityUS(methodSizeC);
-			
-			resultUS[complexityUS] += methodSizeC;
-			resultCC[complexityCC] += methodSizeC;
+			methodSize = size(linesOfCode(stn.src));
+			complexityCC = getComplexityCC(cc);
+			complexityUS = getComplexityUS(methodSize);
+			resultUS[complexityUS] += methodSize;
+			resultCC[complexityCC] += methodSize;
 		}
 	}
 	
@@ -50,7 +44,6 @@ public map[str, str] compute(int volume, loc project) {
 		resultUS[a] = percent(resultUS[a], volume);
 	}
 
-	println("separate LOC: <separate>");
 	return ("US":getGrade(resultCC), "CC":getGrade(resultUS));
 }
 
