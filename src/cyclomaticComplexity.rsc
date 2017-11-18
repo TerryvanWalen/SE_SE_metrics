@@ -23,7 +23,6 @@ public map[str, str] compute(int volume, loc project) {
 			cc = computeCC(impl, size(exceptions));
 			
 			methodSource = linesOfCode(stn.src);
-			println(listToStr(methodSource));
 			methodSize = size(methodSource);
 			complexityCC = getComplexityCC(cc);
 			complexityUS = getComplexityUS(methodSize);
