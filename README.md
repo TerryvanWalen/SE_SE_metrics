@@ -1,17 +1,17 @@
 # University of Amsterdam
-##Software Evolution Assignment 1: Software Metrics
+## Software Evolution Assignment 1: Software Metrics
 
-##Contributors:
+## Contributors:
  - Nicolae Marian Popa
  - Terry van Walen
 
-##Metrics:
+## Metrics:
  - Volume
  - Cyclomatic Complexity
  - Unit size
  - Code duplication
 
-##Volume
+## Volume
 We calculate volume by eliminating any text which is not code and then counting how many lines are left.
 Steps for each file:
  - Replace any strings "..." with the * character, in order to avoid identifying any code-like text in them
@@ -21,11 +21,11 @@ Steps for each file:
  - Remove blank lines
  - Remove line comments
 
-###From numbers to score
+### From numbers to score
 
-###We compute cyclomatic complexity and unit size for each unit in the code, which a single method.
+### We compute cyclomatic complexity and unit size for each unit in the code, which a single method.
 
-##Cyclomatic complexity
+## Cyclomatic complexity
 We calculate cyclomatic complexity by visiting every method in the AST tree of the project and then computing the corresponding CC number for the method body.
 The algorithm starts with a 1 and then adds 1 for each of the following:
  - Returns: TODO: Each return that isn't the last statement of a method
@@ -34,7 +34,7 @@ The algorithm starts with a 1 and then adds 1 for each of the following:
  - Operators: &&, || TODO: ?, and :
  - Exceptions: catch, finally, either throw or throws clause
 
-###From numbers to score
+### From numbers to score
 | CC    | Risk evaluation             |
 | 1-10  | simple, without much risk   |
 | 11-20 | more complex, moderate risk |
@@ -49,12 +49,12 @@ The algorithm starts with a 1 and then adds 1 for each of the following:
 |  --  | -        | -    | -         |
 
 
-##Unit size
+## Unit size
 We calculate unit size in the same iteration over the AST tree as the cyclomatic complexity. 
 We take the method body by reading the source code specified by the src attribute of each node, and then clean the method body using the same steps as in the volume metric.
 Finally, the unit size is obtained by counting the number of lines left in the body. 
 
-###From numbers to score
+### From numbers to score
 | CC    | Risk evaluation             |
 | 1-30  | simple, without much risk   |
 | 30-44 | more complex, moderate risk |
@@ -68,7 +68,7 @@ Finally, the unit size is obtained by counting the number of lines left in the b
 |  -   | 50%      | 15%  | 5%        |
 |  --  | -        | -    | -         |
 
-##Code duplication
+## Code duplication
 We calculate code duplication as the percentage of all code that occurs more than once in equal code blocks of at least 6 lines. 
 When comparing code lines, we ignore leading spaces. So, if a single line is repeated many times, but the lines before and after differ every time, we do not count it as duplicated.
 If however, a group of 6 lines appears unchanged in more than one place, we count it as duplicated. Apart from removing leading spaces, the duplication we measure is an exact string matching duplication.
