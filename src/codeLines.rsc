@@ -46,7 +46,7 @@ public list[str] removeBlanks(list[str] input) {
 
 public str replaceStrings(str s) {
 	return visit(s) {
-		case /\".*\"/ => "\"S\""
+		case /\".*\"/ => "\"*\""
 	}
 }
 

@@ -22,7 +22,9 @@ public map[str, str] compute(int volume, loc project) {
 		case stn:\method(Type \return, str name, list[Declaration] parameters, list[Expression] exceptions, Statement impl): {
 			cc = computeCC(impl, size(exceptions));
 			
-			methodSize = size(linesOfCode(stn.src));
+			methodSource = linesOfCode(stn.src);
+			println(listToStr(methodSource));
+			methodSize = size(methodSource);
 			complexityCC = getComplexityCC(cc);
 			complexityUS = getComplexityUS(methodSize);
 			resultUS[complexityUS] += methodSize;
