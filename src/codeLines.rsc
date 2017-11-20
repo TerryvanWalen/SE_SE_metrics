@@ -12,23 +12,9 @@ public int LOCInProject(M3 model) {
 	set[loc] allProjectFiles = files(model);
 	int count = 0;
 	for (file <- allProjectFiles) {
-		//count += size(linesOfCode(file));
 		count += linesOfCodeC(file);
-		//break;
 	}
 	return count;
-}
-
-public list[str] linesOfCode(loc location) {
-	list[str] source = readFileLines(location);
-	str ss = listToStr(source);
-	ss = replaceStrings(ss);
-	ss = removeBlocks(ss);
-	source = split("\n", ss);
-	source = removeBlanks(source);
-	source = removeSpaces(source);
-	source = removeLineComments(source);
-	return source;
 }
 
 public int linesOfCodeC(loc location) {
@@ -56,18 +42,38 @@ public int linesOfCodeC(loc location) {
 		} else if (contains(line, "*/")) {
 			cBlock = false;
 			//account for code after */
+			int pos = findFirst(line, "*/");
+			str rest = trim(substring(line, pos+2, size(line)));
+			if (rest != "" && !startsWith(line, "//")) 
+				code += 1;
 		} else if (contains(line, "/*")) {
 			cBlock = true;
 			//account for code before /*
+			int pos = findFirst(line, "/*");
+			str rest = trim(substring(line, 0, pos));
+			if (rest != "" && !startsWith(line, "//")) 
+				code += 1;
 		}
 		else {
 			if (!cBlock) {
 				code += 1;
 			}
-			
 		} 
 	}
 	return code;
+}
+
+
+public list[str] linesOfCode(loc location) {
+	list[str] source = readFileLines(location);
+	str ss = listToStr(source);
+	ss = replaceStrings(ss);
+	ss = removeBlocks(ss);
+	source = split("\n", ss);
+	source = removeBlanks(source);
+	source = removeSpaces(source);
+	source = removeLineComments(source);
+	return source;
 }
 
 public str listToStr(list[str] lines) {
@@ -102,7 +108,6 @@ public str replaceStrings(str s) {
 		case /\".*\"/ => "\"\""
 	}
 }
-
 
 public list[str] removeLineComments(list[str] input) {
 	return [a | a <- input, !startsWith(a, "//")];

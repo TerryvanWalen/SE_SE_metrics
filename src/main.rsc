@@ -12,7 +12,7 @@ import duplicationFaster;
 import cyclomaticComplexity;
 
 public void main() {
-	loc project = |project://smallsql0.21_src2|;
+	loc project = |project://smallsql0.21_src|;
 	//loc project = |project://hsqldb-2.3.1|;
 	//loc project = |project://rascal|; 
 	//loc project = |project://smallsql0.21_src2|;
@@ -27,6 +27,11 @@ public void main() {
 	report["Dup"] = "+";
 	report["UT"] = "+";//unit testing
 	
+	println("Volume score: <report["Vol"]>");
+	println("Unit size score: <report["US"]>");
+	println("Cyclomatic complexity score: <report["CC"]>");
+	println("UT score: <report["UT"]>");
+	
 	int analys = (scoreToInt(report["Vol"]) + scoreToInt(report["Dup"]) + scoreToInt(report["US"]) + scoreToInt(report["US"])) / 4;
 	int change = (scoreToInt(report["CC"]) + scoreToInt(report["Dup"])) / 2;
 	int stabil = scoreToInt(report["UT"]);
@@ -38,10 +43,8 @@ public void main() {
 	println("Stability: <intToScore(stabil)>");
 	println("Testability: <intToScore(testab)>");
 	println("Volume metric (<volume>): " + volumeScore);
-	
-	println("CC metric is <compute(volume, project)>");
 
-	int duplication = codeDuplicationInProject(model);
+	//int duplication = codeDuplicationInProject(model);
 	//add score to the report map with the Dup key
 }
 
