@@ -101,6 +101,7 @@ We calculate unit interfacing by counting how many methods are in each risk cate
 
 ### From numbers to score
 UI - number of parameters of a method
+
 | UT    | Risk evaluation             |
 | ----- |:---------------------------:|
 | <=2   | simple, without much risk   |
@@ -114,6 +115,7 @@ We calculate unit testing by counting how many method calls are in each method a
 
 ### From numbers to score - still TODO
 UT - number of parameters of a method
+
 | UT    | Risk evaluation             |
 | ----- |:---------------------------:|
 | ???   | simple, without much risk   |
