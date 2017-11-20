@@ -24,6 +24,7 @@ public list[str] linesOfCode(loc location) {
 	ss = removeBlocks(ss);
 	source = split("\n", ss);
 	source = removeBlanks(source);
+	source = removeSpaces(source);
 	source = removeLineComments(source);
 	return source;
 }
@@ -44,26 +45,24 @@ public list[str] removeBlanks(list[str] input) {
 	return [a | a <- input, trim(a) != ""];
 }
 
+public list[str] removeSpaces(list[str] input) {
+	return visit(input) {
+		case /\s/ => ""
+	}
+}
+
 public str replaceStrings(str s) {
 	return visit(s) {
-		case /\".*\"/ => "\"*\""
+		case /\".*\"/ => "\"\""
 	}
 }
 
 public list[str] removeLineComments(list[str] input) {
-	return [a | a <- input, !startsWith(trim(a), "//")];
+	return [a | a <- input, !startsWith(a, "//")];
 }
 
 public str removeBlocks(str s) {
 	return visit(s) {
 		case /\/\*[\s\S]*?\*\// => ""
 	}
-}
-
-public bool isOneLineComment(str s) {
-	return startsWith(trim(s), "//");
-}
-
-public bool isEmptyLine(str s) {
-	return trim(s) == "";
 }

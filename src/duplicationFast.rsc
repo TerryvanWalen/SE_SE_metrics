@@ -11,6 +11,8 @@ import lang::java::jdt::m3::AST;
 import codeLines;
 
 public int codeDuplicationInProject(M3 model) {
+	datetime st = now();
+	
 	set[loc] projectMethods = methods(model);
 	map[loc, list[str]] methodWithCodes = getCleanCodePerMethod(projectMethods);
 	//map[loc, list[str]] orderedMethodWithCodes = getCleanCodePerMethodOrdered(methodWithCodes);
@@ -22,13 +24,16 @@ public int codeDuplicationInProject(M3 model) {
 
 	int locDuplicated = locInMethods - (locNonDuplicated + locInSmallMethods);
 	println("<locDuplicated>/<locInMethods> - <locDuplicated/toReal(locInMethods)>");
+	
+	datetime en = now();
+	println(createDuration(st, en));
 	return 0;
 }
 
 private map[loc, list[str]] getCleanCodePerMethod(set[loc] projectMethods) {
 	map[loc, list[str]] codeLines = ();
 	for (file <- projectMethods) {
-		list[str] lines = extractCodeFromFiles(file);
+		list[str] lines = linesOfCode(file);
 		
 		// temp solution to remove declaration of method and closing bracket
 		if (size(lines) > 1) {
@@ -77,6 +82,7 @@ private int countNonDuplicateCodeofSize(map[loc, list[str]] methodWithCode, int 
 		println("<i>/<size(ms)> - <size(code1) - (size([0..size(code1)] - duplicatedCodeInCode1))>/<size(code1)>");
 		unDuplicatedLines += size([0..size(code1)] - duplicatedCodeInCode1);
 	}
+	
 	return unDuplicatedLines;
 }
 
