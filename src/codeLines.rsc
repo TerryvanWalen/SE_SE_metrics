@@ -83,7 +83,7 @@ public list[str] replaceStringsAndTrim(list[str] input) {
 }
 
 public list[str] removeBlanks(list[str] input) {
-	return [a | a <- input, trim(a) != ""];
+	return [a | a <- input, a != ""];
 }
 
 
@@ -94,7 +94,7 @@ public list[str] removeSpaces(list[str] input) {
 }
 
 public list[str] removeLineComments(list[str] input) {
-	return [a | a <- input, !startsWith(trim(a), "//")];
+	return [a | a <- input, !startsWith(a, "//")];
 }
 
 public str replaceStrings(str s) {

@@ -17,29 +17,29 @@ public void main() {
 	//loc project = |project://rascal|; 
 	//loc project = |project://smallsql0.21_src2|;
 	M3 model	= createM3FromEclipseProject(project);
-	int volume = LOCInProject(model);
-	println("<volume> lines of code");
-	map[str,str] report = ();
-
-	volumeScore = ["++", "+", "o", "-", "--"][(0 | it + 1 | x <- [66, 246, 655, 1310], volume >= x*1000)];
-	report["Vol"] = volumeScore;
-	report += compute(volume, project);//adds CC (cyclomati) and US(unit size) keys
-	report["Dup"] = "+";
-	report["UT"] = "+";//unit testing
-	
-	int analys = (scoreToInt(report["Vol"]) + scoreToInt(report["Dup"]) + scoreToInt(report["US"]) + scoreToInt(report["US"])) / 4;
-	int change = (scoreToInt(report["CC"]) + scoreToInt(report["Dup"])) / 2;
-	int stabil = scoreToInt(report["UT"]);
-	int testab = (scoreToInt(report["CC"]) + scoreToInt(report["US"]) + scoreToInt(report["UT"])) / 3;
-	
-	println("Report");
-	println("Analysability: <intToScore(analys)>");
-	println("Changeability: <intToScore(change)>");
-	println("Stability: <intToScore(stabil)>");
-	println("Testability: <intToScore(testab)>");
-	println("Volume metric (<volume>): " + volumeScore);
-	
-	println("CC metric is <compute(volume, project)>");
+	//int volume = LOCInProject(model);
+	//println("<volume> lines of code");
+	//map[str,str] report = ();
+//
+	//volumeScore = ["++", "+", "o", "-", "--"][(0 | it + 1 | x <- [66, 246, 655, 1310], volume >= x*1000)];
+	//report["Vol"] = volumeScore;
+	//report += compute(volume, project);//adds CC (cyclomati) and US(unit size) keys
+	//report["Dup"] = "+";
+	//report["UT"] = "+";//unit testing
+	//
+	//int analys = (scoreToInt(report["Vol"]) + scoreToInt(report["Dup"]) + scoreToInt(report["US"]) + scoreToInt(report["US"])) / 4;
+	//int change = (scoreToInt(report["CC"]) + scoreToInt(report["Dup"])) / 2;
+	//int stabil = scoreToInt(report["UT"]);
+	//int testab = (scoreToInt(report["CC"]) + scoreToInt(report["US"]) + scoreToInt(report["UT"])) / 3;
+	//
+	//println("Report");
+	//println("Analysability: <intToScore(analys)>");
+	//println("Changeability: <intToScore(change)>");
+	//println("Stability: <intToScore(stabil)>");
+	//println("Testability: <intToScore(testab)>");
+	//println("Volume metric (<volume>): " + volumeScore);
+	//
+	//println("CC metric is <compute(volume, project)>");
 
 	int duplication = codeDuplicationInProject(model);
 	//add score to the report map with the Dup key

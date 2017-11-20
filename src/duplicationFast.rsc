@@ -16,7 +16,11 @@ public int codeDuplicationInProject(M3 model) {
 	set[loc] projectMethods = methods(model);
 	map[loc, list[str]] methodWithCodes = getCleanCodePerMethod(projectMethods);
 	//map[loc, list[str]] orderedMethodWithCodes = getCleanCodePerMethodOrdered(methodWithCodes);
+	
+	datetime md = now();
 	map[loc, list[str]] validMethodWithCodes = extractMethodsSmallerThanNumLines(methodWithCodes, 6);
+	
+	
 	int locNonDuplicated = countNonDuplicateCodeofSize(validMethodWithCodes, 6);
 	
 	int locInMethods = (0 | it + 1 | l <- methodWithCodes, s <- methodWithCodes[l]);
@@ -27,6 +31,8 @@ public int codeDuplicationInProject(M3 model) {
 	
 	datetime en = now();
 	println(createDuration(st, en));
+	println(createDuration(st, md));
+	println(createDuration(md, en));
 	return 0;
 }
 
@@ -92,17 +98,20 @@ private list[int] getDuplicatedLinesOfSize(list[str] code1, list[str] code2, int
 	list[int] duplicatedLines = [];
 	str line1 = "";
 	str line2 = "";
+	
+	int sizeCode1 = size(code1);
+	int sizeCode2 = size(code2);
 	//println(([maxLines-1] | it + l | l <- [maxLines+1 .. size(code1)], (l+1) % maxLines == 0));
 	
 	//for (int i <- ([maxLines-1] | it + l | l <- [maxLines+1 .. size(code1)], (l+1) % maxLines == 0)) {}
 	
 	int mRem = 0;
 	int i = max;
-	while (i < size(code1)) {		
+	while (i < sizeCode1) {		
 		line1 = code1[i];
 		
-		int j = sameFile ? i+1 : 0;
-		while (j < size(code2) - 1) {
+		int j = sameFile ? i+1 : max;
+		while (j < sizeCode2 - 1) {
 			line2 = code2[j];
 
 			if (line1 == line2) {
@@ -111,14 +120,14 @@ private list[int] getDuplicatedLinesOfSize(list[str] code1, list[str] code2, int
 					k += 1;
 				}
 				int m = 0;
-				while ((i+m+1 < size(code1) && j+m+1 < size(code2)) && code1[i+m+1] == code2[j+m+1]) { 
+				while ((i+m+1 < sizeCode1 && j+m+1 < sizeCode2) && code1[i+m+1] == code2[j+m+1]) { 
 					m += 1;
 				}
 				if (k + m + 1 >= maxLines) {
 					duplicatedLines += [i-k..(i+m+1)];
-					mRem = m + 1 > mRem ? m + 1 : m + 1;
+					mRem = m + 1 > mRem ? m + 1 : mRem;
 				}
-				j += m+1;
+				j += k + m;
 			}
 			j += 1;
 		}

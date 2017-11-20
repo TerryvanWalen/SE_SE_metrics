@@ -25,18 +25,31 @@ public int codeDuplicationInProject(M3 model) {
 	//int locDuplicated = locInMethods - (locNonDuplicated + locInSmallMethods);
 	//println("<locDuplicated>/<locInMethods> - <locDuplicated/toReal(locInMethods)>");
 	//
+	datetime md = now();
+	int blockSize = 6;
+	map[loc, list[str]] sixBlocks = getBlocksOfSix(methodWithCodes, blockSize);
+	list[str] ds = ([] | it + sixBlocks[b] | b <- sixBlocks) - dup(([] | it + sixBlocks[b] | b <- sixBlocks));
+
 	
-	map[loc, str] sames = getConnections(methodWithCodes);
-	iprintln(sames);
+	
+	//iprintln((l : sixBlocks[l] & ds | l <- sixBlocks));
+	rel[loc, int] temt = {<l, j> | loc l <- sixBlocks, int i <- [0..size(sixBlocks[l])], sixBlocks[l][i] in ds, int j <- [i..i+blockSize]};
+	iprintln(sort(temt));
+	iprintln(size(temt));
+	//iprintln(ds);
+	//iprintln(sixBlocks);
 	datetime en = now();
+	println(createDuration(st, md));
+	println(createDuration(md, en));
 	println(createDuration(st, en));
 	return 0;
 }
 
-private map[loc, str] getConnections(map[loc, list[str]] ms) {
-	map[loc, str] newms = ();
+private map[loc, list[str]] getBlocksOfSix(map[loc, list[str]] ms, int maxLines) {
+	map[loc, list[str]] newms = ();
 	for (m <- ms) {
-		newms[m] = calcBlockStrings(ms[m]);
+		newms[m] = ([] | it + intercalate("\n",slice(ms[m], i, maxLines)) | i <- index(ms[m]), i + maxLines < size(ms[m]));
+		//iprintln(newms[m]);
 	}
 	return newms;
 }
