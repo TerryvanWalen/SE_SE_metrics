@@ -18,6 +18,7 @@ public void main() {
 	//loc project = |project://smallsql0.21_src2|;
 	M3 model	= createM3FromEclipseProject(project);
 	int volume = LOCInProject(model);
+	println("<volume> lines of code");
 	map[str,str] report = ();
 
 	volumeScore = ["++", "+", "o", "-", "--"][(0 | it + 1 | x <- [66, 246, 655, 1310], volume >= x*1000)];
@@ -36,9 +37,9 @@ public void main() {
 	println("Changeability: <intToScore(change)>");
 	println("Stability: <intToScore(stabil)>");
 	println("Testability: <intToScore(testab)>");
-	//println("Volume metric (<volume>): " + volumeScore);
-	//
-	//println("CC metric is <compute(volume, project)>");
+	println("Volume metric (<volume>): " + volumeScore);
+	
+	println("CC metric is <compute(volume, project)>");
 	
 	//int duplication = codeDuplicationInProject(model);
 	//add score to the report map with the Dup key
