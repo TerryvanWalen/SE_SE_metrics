@@ -8,7 +8,7 @@ import Prelude;
 import String;
 
 import codeLines;
-import duplication;
+import duplicationFast;
 import cyclomaticComplexity;
 
 public void main() {
