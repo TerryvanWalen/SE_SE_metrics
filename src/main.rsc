@@ -8,14 +8,14 @@ import Prelude;
 import String;
 
 import codeLines;
-import duplication;
+import duplicationFast;
 import cyclomaticComplexity;
 
 public void main() {
 	//loc project = |project://smallsql0.21_src|;
-	loc project = |project://hsqldb-2.3.1|;
+	//loc project = |project://hsqldb-2.3.1|;
 	//loc project = |project://rascal|; 
-	//loc project = |project://smallsql0.21_src|;
+	loc project = |project://smallsql0.21_src2|;
 	M3 model	= createM3FromEclipseProject(project);
 	//int volume 	= LOCInProject(model);
 
