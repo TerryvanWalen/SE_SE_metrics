@@ -21,9 +21,7 @@ public map[str, str] compute(int volume, loc project) {
 	visit (asts) {
 		case stn:\method(Type \return, str name, list[Declaration] parameters, list[Expression] exceptions, Statement impl): {
 			cc = computeCC(impl, size(exceptions));
-			
-			//methodSource = linesOfCode(stn.src);
-			//methodSize = size(methodSource);
+	
 			methodSize = linesOfCodeC(stn.src);
 			complexityCC = getComplexityCC(cc);
 			complexityUS = getComplexityUS(methodSize);
@@ -45,6 +43,7 @@ public map[str, str] compute(int volume, loc project) {
 		println("<a> <resultUS[a]>: lines of code, <percent(resultUS[a], volume)> percent");
 		resultUS[a] = percent(resultUS[a], volume);
 	}
+	println();
 
 	return ("US":getGrade(resultCC), "CC":getGrade(resultUS));
 }
