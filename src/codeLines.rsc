@@ -10,29 +10,60 @@ import lang::java::jdt::m3::AST;
 
 public int LOCInProject(M3 model) {
 	set[loc] allProjectFiles = files(model);
-	return size(extractCodeFromFiles(allProjectFiles));
-}
-
-public list[str] extractCodeFromFiles(set[loc] projectFiles) {
-	list[str] rawLines = extractRawFromFiles(projectFiles);
-	list[str] codeLines = extractCodeLines(rawLines);
-	return codeLines;
-}
-public list[str] extractCodeFromFiles(loc projectFile) = extractCodeFromFiles({projectFile});
-
-private list[str] extractRawFromFiles(set[loc] files) {
-	list[str] lines = [];
-	bool ok = true;
-	for (f <- files) {
-		if (ok == true)
-			println("file is: <f>");
-		ok = false;
-		lines += readFileLines(f);
+	int count = 0;
+	for (file <- allProjectFiles) {
+		count += size(linesOfCode(file));
 	}
-	return lines;
+	return count;
 }
 
-// Problem, this solution does not recognize unproperly formatted multiline comments.
-public list[str] extractCodeLines(list[str] lines) {
-	return ([]| it + line | x <- lines, /^\s*<line:[^\/|*|\s]+.*>$/ := x);
+public list[str] linesOfCode(loc location) {
+	list[str] source = readFileLines(location);
+	str ss = listToStr(source);
+	ss = replaceStrings(ss);
+	ss = removeBlocks(ss);
+	source = split("\n", ss);
+	source = removeBlanks(source);
+	source = removeLineComments(source);
+	return source;
+}
+
+public str listToStr(list[str] lines) {
+	str res = "";
+	for (line <- lines) {
+		res += line + "\n";
+	}
+	return res;
+}
+
+public list[str] addNewLines(list[str] input) {
+	return ["<a>\n" | a <- input];
+}
+
+public list[str] removeBlanks(list[str] input) {
+	return [a | a <- input, trim(a) != ""];
+}
+
+public str replaceStrings(str s) {
+	return visit(s) {
+		case /\".*\"/ => "\"*\""
+	}
+}
+
+public list[str] removeLineComments(list[str] input) {
+	return [a | a <- input, !startsWith(trim(a), "//")];
+}
+
+public str removeBlocks(str s) {
+	return visit(s) {
+		case /\/\*[\s\S]*?\*\// => ""
+	}
+}
+
+public bool isOneLineComment(str s) {
+	return startsWith(trim(s), "//");
+}
+
+public bool isEmptyLine(str s) {
+	return trim(s) == "";
 }
