@@ -20,22 +20,22 @@ public void main() {
 	datetime st = now();
 	println("*****START*****");
   	
-	loc project = |project://smallsql0.21_src|;
-	//loc project = |project://hsqldb-2.3.1|;
+	//loc project = |project://smallsql0.21_src|;
+	loc project = |project://hsqldb-2.3.1|;
 	//loc project = |project://rascal|; 
 	//loc project = |project://smallsql0.21_src|;
 
-	M3 model	= createM3FromEclipseProject(project);
+	M3 model = createM3FromEclipseProject(project);
 	map[loc, list[str]] codeBase = getCleanCodePerFile(files(model));
 	int volume  = locInCodeBase(codeBase);
 	map[str,str] report = ();
-
-	volumeScore = ["++", "+", "o", "-", "--"][(0 | it + 1 | x <- [66, 246, 655, 1310], volume >= x*1000)];
-	report["Vol"] = volumeScore;
+	
+	println("<volume> lines of code");
+	report["Vol"] = getGradeLOC(volume);//volume in lines of code
 	report += compute(volume, project);//adds CC (cyclomati) and US(unit size) keys
 	report["Dup"] = computeDup(codeBase, volume);//code duplication
-	report["UT"] = computeUT(project);
-	report["UI"] = computeUI(project);
+	report["UT"] = computeUT(project);//unit testing
+	report["UI"] = computeUI(project);//unit interfacing
 	
 	println("Volume score: <report["Vol"]>");
 	println("Duplication score: <report["Dup"]>");

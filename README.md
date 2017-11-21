@@ -10,6 +10,8 @@
  - Cyclomatic Complexity
  - Unit size
  - Code duplication
+ - Unit interfacing
+ - Unit testing
 
 ## Volume
 We calculate volume by eliminating any text which is not code and then counting how many lines are left.
@@ -113,12 +115,15 @@ UI - number of parameters of a method
 Method calls contribute to code coverage.
 We calculate unit testing by counting how many method calls are in each method and how many assert statements there are. They should be kind of similar, because method calls contribute to code coverage and assert conditions test behavior.
 
-### From numbers to score - still TODO
-UT - number of parameters of a method
+### From numbers to score
+UT = AC / FC where:
+FC: function calls
+AC: assert statements
 
-| UT    | Risk evaluation             |
-| ----- |:---------------------------:|
-| ???   | simple, without much risk   |
-| ???   | more complex, moderate risk |
-| ???   | complex, high risk          |
-| ???   | untestable, very high risk  |
+| Rank | UT    |
+| ---- |:-----:|
+|  ++  | >4    |
+|  +   | 2-4   |
+|  o   | 1-2   |
+|  -   | 0.5-1 |
+|  --  | <0.5  |
