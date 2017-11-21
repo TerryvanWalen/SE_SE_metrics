@@ -54,7 +54,7 @@ private list[str] getDuplicatedBlocks(map[loc, list[str]] codeBlocks) {
 public list[&T] ndup(list[&T] lst) {
   done = {};
   return for (e <- lst) {
-  	if(e notin done) { done = done + {e}; } else {println(e); append e;}
+  	if(e notin done) { done = done + {e}; } else {append e;}
   }
 }
 

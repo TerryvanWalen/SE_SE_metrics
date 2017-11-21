@@ -16,7 +16,7 @@ public int LOCInProject(M3 model) {
 		count += size(linesOfCodeC(file));
 		fileCount += 1;
 	}
-	println("<fileCount> files in the project");
+	//println("<fileCount> files in the project");
 	return count;
 }
 
