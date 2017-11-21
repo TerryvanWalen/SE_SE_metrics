@@ -15,17 +15,6 @@ public map[loc, list[str]] getCleanCodePerFile(set[loc] projectMethods) {
 	return (file: linesOfCodeC(file) | file <- projectMethods);
 }
 
-public int LOCInProject(M3 model) {
-	set[loc] allProjectFiles = files(model);
-	int count = 0;
-	int fileCount = 0;
-	for (file <- allProjectFiles) {
-		count += size(linesOfCodeC(file));
-		fileCount += 1;
-	}
-	//println("<fileCount> files in the project");
-	return count;
-}
 
 public list[str] linesOfCodeC(loc location) {
 	list[str] source = readFileLines(location);
@@ -122,18 +111,6 @@ public str listToStr(list[str] lines) {
 		res += line + "\n";
 	}
 	return res;
-}
-
-public list[str] linesOfCode(loc location) {
-	list[str] source = readFileLines(location);
-	str ss = listToStr(source);
-	ss = replaceStrings(ss);
-	//print(ss);
-	ss = removeBlocks(ss);
-	source = split("\n", ss);
-	source = removeBlanks(source);
-	source = removeLineComments(source);
-	return source;
 }
 
 public str replaceStringsAndTrim(str input) {
