@@ -7,6 +7,13 @@ import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
+public int locInCodeBase(map[loc, list[str]] codeBase) {
+	return (0 | it + size(codeBase[l]) | l <- codeBase);
+}
+
+public map[loc, list[str]] getCleanCodePerFile(set[loc] projectMethods) {
+	return (file: linesOfCodeC(file) | file <- projectMethods);
+}
 
 public int LOCInProject(M3 model) {
 	set[loc] allProjectFiles = files(model);

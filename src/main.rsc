@@ -8,6 +8,7 @@ import Prelude;
 import String;
 import DateTime;
 
+
 import codeLines;
 import duplicationFaster;
 import cyclomaticComplexity;
@@ -18,7 +19,6 @@ import unitTesting;
 public void main() {
 	datetime st = now();
 	println("*****START*****");
-  	println(printTime(st, "HH:mm:ss"));
   	
 	loc project = |project://smallsql0.21_src|;
 	//loc project = |project://hsqldb-2.3.1|;
@@ -26,18 +26,19 @@ public void main() {
 	//loc project = |project://smallsql0.21_src|;
 
 	M3 model	= createM3FromEclipseProject(project);
-	int volume = LOCInProject(model);
-	println("<volume> lines of code");
+	map[loc, list[str]] codeBase = getCleanCodePerFile(files(model));
+	int volume  = locInCodeBase(codeBase);
 	map[str,str] report = ();
 
 	volumeScore = ["++", "+", "o", "-", "--"][(0 | it + 1 | x <- [66, 246, 655, 1310], volume >= x*1000)];
 	report["Vol"] = volumeScore;
 	report += compute(volume, project);//adds CC (cyclomati) and US(unit size) keys
-	report["Dup"] = "+";//code duplication
+	report["Dup"] = computeDup(codeBase, volume);//code duplication
 	report["UT"] = computeUT(project);
 	report["UI"] = computeUI(project);
 	
 	println("Volume score: <report["Vol"]>");
+	println("Duplication score: <report["Dup"]>");
 	println("Unit size score: <report["US"]>");
 	println("Cyclomatic complexity score: <report["CC"]>");
 	println("Unit testing score: <report["UT"]>");
@@ -49,19 +50,18 @@ public void main() {
 	int testab = (scoreToInt(report["CC"]) + scoreToInt(report["US"]) + scoreToInt(report["UT"])) / 3;
 	
 	println();
-	println("Report");
+	println("Report:");
 	println("Analysability: <intToScore(analys)>");
 	println("Changeability: <intToScore(change)>");
 	println("Stability: <intToScore(stabil)>");
 	println("Testability: <intToScore(testab)>");
 	println("Reusability: <report["UI"]>");
-	
-	int duplication = codeDuplicationInProject(model);
-			
+				
 
 	datetime end = now();
-	println(printTime(end, "HH:mm:ss"));
-	println("Analysis duration: <createDuration(st, end)>");
+	Duration elapsedTime = createDuration(st, end);
+	println("");
+	println("Analysis duration: <elapsedTime[4]> minutes and <elapsedTime[5]> seconds");
 	println("duration(int years, int months, int days, int hours, int minutes, int seconds, int milliseconds)");
 	println("*****END*****");
 }

@@ -13,7 +13,7 @@ import codeLines;
 public int codeDuplicationInProject(M3 model) {
 	datetime st = now();
 	
-	set[loc] projectMethods = methods(model);
+	set[loc] projectMethods = files(model);
 	map[loc, list[str]] methodWithCodes = getCleanCodePerMethod(projectMethods);
 	//map[loc, list[str]] orderedMethodWithCodes = getCleanCodePerMethodOrdered(methodWithCodes);
 	

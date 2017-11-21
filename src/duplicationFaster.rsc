@@ -11,31 +11,17 @@ import lang::java::jdt::m3::AST;
 
 import codeLines;
 
-public int codeDuplicationInProject(M3 model) {
-	set[loc] projectMethods = files(model);
-	map[loc, list[str]] methodWithCodes = getCleanCodePerMethod(projectMethods);
-	
-	int locInMethods = (0 | it + size(methodWithCodes[l]) | l <- methodWithCodes);	
-	
-	datetime st = now();
-	int blockSize = 6;
-	map[loc, list[str]] codeBlocks = getBlocksOf(methodWithCodes, blockSize);
-	datetime st2 = now();
-	list[str] duplicates = getDuplicatedBlocks(codeBlocks);
-	datetime st3 = now();
-	rel[loc, int] duplicatesPerFile = getDuplicatedLineNumberPerFile(codeBlocks, duplicates, blockSize);
-	datetime en = now();
-	println(createDuration(st, st2));
-	println(createDuration(st2, st3));
-	println(createDuration(st3, en));
-	println(createDuration(st, en));
-	iprintln("<size(duplicatesPerFile)>/<locInMethods> : <size(duplicatesPerFile) / toReal(locInMethods)>");
-	return size(duplicatesPerFile);
+public str computeDup(map[loc, list[str]] codeBase, int volume) {
+	real dup = (computeDup(codeBase) / toReal(volume)) * 100;
+	return ["++", "+", "o", "-", "--"][(0 | it + 1 | x <- [3, 5, 10, 20], dup >= x)];;
 }
 
-
-private map[loc, list[str]] getCleanCodePerMethod(set[loc] projectMethods) {
-	return (file: linesOfCode(file) | file <- projectMethods);
+public int computeDup(map[loc, list[str]] codeBase) {
+	int blockSize = 6;
+	map[loc, list[str]] codeBlocks = getBlocksOf(codeBase, blockSize);
+	list[str] duplicates = getDuplicatedBlocks(codeBlocks);
+	rel[loc, int] duplicatesPerFile = getDuplicatedLineNumberPerFile(codeBlocks, duplicates, blockSize);
+	return size(duplicatesPerFile);
 }
 
 private map[loc, list[str]] getBlocksOf(map[loc, list[str]] ms, int maxLines) {
