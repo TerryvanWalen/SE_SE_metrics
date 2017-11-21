@@ -12,7 +12,7 @@ public int LOCInProject(M3 model) {
 	set[loc] allProjectFiles = files(model);
 	int count = 0;
 	for (file <- allProjectFiles) {
-		count += linesOfCodeC(file);
+		count += size(linesOfCode(file));
 	}
 	return count;
 }
@@ -68,10 +68,12 @@ public list[str] linesOfCode(loc location) {
 	list[str] source = readFileLines(location);
 	str ss = listToStr(source);
 	ss = replaceStrings(ss);
+	//print(ss);
 	ss = removeBlocks(ss);
 	source = split("\n", ss);
 	source = removeBlanks(source);
-	source = removeSpaces(source);
+	source = trimLines(source);
+	//source = removeSpaces(source);
 	source = removeLineComments(source);
 	return source;
 }
@@ -84,14 +86,14 @@ public str listToStr(list[str] lines) {
 	return res;
 }
 
-public list[str] replaceStringsAndTrim(list[str] input) {
-	return [trim(replaceStrings(a)) | a <- input];
-}
 
 public list[str] removeBlanks(list[str] input) {
-	return [a | a <- input, a != ""];
+	return [a | a <- input, trim(a) != ""];
 }
 
+public list[str] trimLines(list[str] input) {
+	return [trim(a) | a <- input];
+}
 
 public list[str] removeSpaces(list[str] input) {
 	return visit(input) {
@@ -105,12 +107,8 @@ public list[str] removeLineComments(list[str] input) {
 
 public str replaceStrings(str s) {
 	return visit(s) {
-		case /\".*\"/ => "\"\""
+		case /\"<match:.*>\"/ => "\"<replaceAll(match, "*", "X")>\""
 	}
-}
-
-public list[str] removeLineComments(list[str] input) {
-	return [a | a <- input, !startsWith(a, "//")];
 }
 
 public str removeBlocks(str s) {

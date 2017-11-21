@@ -20,14 +20,14 @@ public void main() {
 	println("*****START*****");
   	println(printTime(st, "HH:mm:ss"));
   	
-	//loc project = |project://smallsql0.21_src|;
+	loc project = |project://smallsql0.21_src|;
 	//loc project = |project://hsqldb-2.3.1|;
 	//loc project = |project://rascal|; 
-	loc project = |project://smallsql0.21_src2|;
+	//loc project = |project://smallsql0.21_src|;
 
 	M3 model	= createM3FromEclipseProject(project);
-//	int volume = LOCInProject(model);
-//	println("<volume> lines of code");
+	//int volume = LOCInProject(model);
+	//println("<volume> lines of code");
 //	map[str,str] report = ();
 //
 //	volumeScore = ["++", "+", "o", "-", "--"][(0 | it + 1 | x <- [66, 246, 655, 1310], volume >= x*1000)];
@@ -55,14 +55,15 @@ public void main() {
 //	println("Stability: <intToScore(stabil)>");
 //	println("Testability: <intToScore(testab)>");
 //	println("Reusability: <report["UI"]>");
-//	
-//	datetime end = now();
-//	println(printTime(end, "HH:mm:ss"));
-//	println("Analysis duration: <createDuration(st, end)>");
-//	println("duration(int years, int months, int days, int hours, int minutes, int seconds, int milliseconds)");
-//	println("*****END*****");
 	
 	int duplication = codeDuplicationInProject(model);
+	println(duplication);
+	
+	datetime end = now();
+	println(printTime(end, "HH:mm:ss"));
+	println("Analysis duration: <createDuration(st, end)>");
+	println("duration(int years, int months, int days, int hours, int minutes, int seconds, int milliseconds)");
+	println("*****END*****");
 	//add score to the report map with the Dup key
 }
 

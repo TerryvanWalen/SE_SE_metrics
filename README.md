@@ -3,7 +3,7 @@
 
 ## Contributors:
  - Nicolae Marian Popa
- - Terry van Walen
+ - Terry van Walen (10428232)
 
 ## Metrics:
  - Volume
@@ -23,7 +23,7 @@ Steps for each file:
 
 ### From numbers to score
 
-| Rank | MY       | Java     | 
+| Rank | MY       | Java     |
 | ---- |:--------:|:--------:|
 |  ++  | 0-8      | 0-66     |
 |  +   | 8-30     | 66-246   |
@@ -61,9 +61,9 @@ The algorithm starts with a 1 and then adds 1 for each of the following:
 
 
 ## Unit size
-We calculate unit size in the same iteration over the AST tree as the cyclomatic complexity. 
+We calculate unit size in the same iteration over the AST tree as the cyclomatic complexity.
 We take the method body by reading the source code specified by the src attribute of each node, and then clean the method body using the same steps as in the volume metric.
-Finally, the unit size is obtained by counting the number of lines left in the body. 
+Finally, the unit size is obtained by counting the number of lines left in the body.
 
 ### From numbers to score
 CC - cyclomatic complexity score
@@ -83,7 +83,7 @@ CC - cyclomatic complexity score
 |  --  | -        | -    | -         |
 
 ## Code duplication
-We calculate code duplication as the percentage of all code that occurs more than once in equal code blocks of at least 6 lines. 
+We calculate code duplication as the percentage of all code that occurs more than once in equal code blocks of at least 6 lines.
 When comparing code lines, we ignore leading spaces. So, if a single line is repeated many times, but the lines before and after differ every time, we do not count it as duplicated.
 If however, a group of 6 lines appears unchanged in more than one place, we count it as duplicated. Apart from removing leading spaces, the duplication we measure is an exact string matching duplication.
 
@@ -97,7 +97,7 @@ If however, a group of 6 lines appears unchanged in more than one place, we coun
 
 ## Unit interfacing
 Unit interfacing can negatively impact maintainability, as units with a high number of parameters are harder to instantiate because more knowledge about the context and about each parameters is required. The area of the maintainability index where unit interfacing plays a role is reusability.
-We calculate unit interfacing by counting how many methods are in each risk category based on the table below. 
+We calculate unit interfacing by counting how many methods are in each risk category based on the table below.
 
 ### From numbers to score
 UI - number of parameters of a method

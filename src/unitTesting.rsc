@@ -17,7 +17,7 @@ public str computeUT(loc project) {
 	set[Declaration] testClasses = {};
 	visit (asts) {
 		case cl:\class(str name, list[Type] extends, list[Type] implements, list[Declaration] body): {
-			println("Class name is <name>");
+			//println("Class name is <name>");
 			if (endsWith(name, "Test"))
 				testClasses += cl;
 		}
