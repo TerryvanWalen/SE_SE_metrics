@@ -29,13 +29,9 @@ public int codeDuplicationInProject(M3 model) {
 	int blockSize = 6;
 	map[loc, list[str]] sixBlocks = getBlocksOfSix(methodWithCodes, blockSize);
 	list[str] ds = ([] | it + sixBlocks[b] | b <- sixBlocks) - dup(([] | it + sixBlocks[b] | b <- sixBlocks));
-
-	
-	
-	//iprintln((l : sixBlocks[l] & ds | l <- sixBlocks));
-	rel[loc, int] temt = {<l, j> | loc l <- sixBlocks, int i <- [0..size(sixBlocks[l])], sixBlocks[l][i] in ds, int j <- [i..i+blockSize]};
-	iprintln(sort(temt));
-	iprintln(size(temt));
+	rel[loc, int] duplicatesPerFile = {<l, j> | loc l <- sixBlocks, int i <- [0..size(sixBlocks[l])], sixBlocks[l][i] in ds, int j <- [i..i+blockSize]};
+	iprintln(sort(duplicatesPerFile));
+	iprintln(size(duplicatesPerFile));
 	//iprintln(ds);
 	//iprintln(sixBlocks);
 	datetime en = now();

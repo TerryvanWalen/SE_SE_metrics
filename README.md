@@ -66,6 +66,7 @@ We take the method body by reading the source code specified by the src attribut
 Finally, the unit size is obtained by counting the number of lines left in the body. 
 
 ### From numbers to score
+CC - cyclomatic complexity score
 | CC    | Risk evaluation             |
 | ----- |:---------------------------:|
 | 1-30  | simple, without much risk   |
@@ -93,3 +94,31 @@ If however, a group of 6 lines appears unchanged in more than one place, we coun
 |  o   | 5-10%       |
 |  -   | 10-20%      |
 |  --  | 20-100%     |
+
+## Unit interfacing
+Unit interfacing can negatively impact maintainability, as units with a high number of parameters are harder to instantiate because more knowledge about the context and about each parameters is required. The area of the maintainability index where unit interfacing plays a role is reusability.
+We calculate unit interfacing by counting how many methods are in each risk category based on the table below. 
+
+### From numbers to score
+UI - number of parameters of a method
+
+| UT    | Risk evaluation             |
+| ----- |:---------------------------:|
+| <=2   | simple, without much risk   |
+| <=3   | more complex, moderate risk |
+| <=4   | complex, high risk          |
+| >4    | untestable, very high risk  |
+
+## Unit testing
+Method calls contribute to code coverage.
+We calculate unit testing by counting how many method calls are in each method and how many assert statements there are. They should be kind of similar, because method calls contribute to code coverage and assert conditions test behavior.
+
+### From numbers to score - still TODO
+UT - number of parameters of a method
+
+| UT    | Risk evaluation             |
+| ----- |:---------------------------:|
+| ???   | simple, without much risk   |
+| ???   | more complex, moderate risk |
+| ???   | complex, high risk          |
+| ???   | untestable, very high risk  |
