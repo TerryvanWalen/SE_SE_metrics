@@ -30,9 +30,9 @@ public int codeDuplicationInProject(M3 model) {
 	println("<locDuplicated>/<locInMethods> - <locDuplicated/toReal(locInMethods)>");
 	
 	datetime en = now();
-	println(createDuration(st, en));
-	println(createDuration(st, md));
-	println(createDuration(md, en));
+	//println(createDuration(st, en));
+	//println(createDuration(st, md));
+	//println(createDuration(md, en));
 	return 0;
 }
 

@@ -57,14 +57,13 @@ public void main() {
 	println("Reusability: <report["UI"]>");
 	
 	int duplication = codeDuplicationInProject(model);
-	println(duplication);
-	
+			
+
 	datetime end = now();
 	println(printTime(end, "HH:mm:ss"));
 	println("Analysis duration: <createDuration(st, end)>");
 	println("duration(int years, int months, int days, int hours, int minutes, int seconds, int milliseconds)");
 	println("*****END*****");
-	//add score to the report map with the Dup key
 }
 
 public int scoreToInt("++") = 5;
