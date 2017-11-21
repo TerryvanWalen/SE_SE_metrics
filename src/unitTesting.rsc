@@ -17,7 +17,7 @@ public str computeUT(loc project) {
 	set[Declaration] testClasses = {};
 	visit (asts) {
 		case cl:\class(str name, list[Type] extends, list[Type] implements, list[Declaration] body): {
-			println("Class name is <name>");
+			//println("Class name is <name>");
 			if (endsWith(name, "Test"))
 				testClasses += cl;
 		}
@@ -40,20 +40,23 @@ public str computeUT(loc project) {
 					mCalls += 1;		
 
 				case \methodCall(bool isSuper, Expression receiver, str name, list[Expression] arguments): 
-					mCalls += 1; 
-    		
+					mCalls += 1; 	
 			}
 			result[getComplexityUT(assertPerMethod, mCalls)] += 1;
 		}
 	}
+	if (totalMethods > 0) {
+		println("Unit testing for <totalMethods> methods:");
+		for (a <- result) {
+			println("<a>: <result[a]> methods, <percent(result[a], totalMethods)> percent");
+			result[a] = percent(result[a], totalMethods);
+		}
+		println();
+		return getGrade(result);
+	} 
+	println("No test methods! Booh!");
+	return "--";
 	
-	println("Unit testing for <totalMethods> methods:");
-	for (a <- result) {
-		println("<a>: <result[a]> methods, <percent(result[a], totalMethods)> percent");
-		result[a] = percent(result[a], totalMethods);
-	}
-	println();
-	return "+";
 }
 
 private map[str, int] getEmptyComplexityMap() {
