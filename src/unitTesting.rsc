@@ -84,12 +84,17 @@ private str getGrade(map[str, int] resultMap) {
 * Returns the complexity according to the number of assert statements
 * TODO: return complexity based on both params
 */
-private str getComplexityUT(int aCount, int mCalls) {
-	if (aCount <= 2) 
-		return "simple";
-	if (aCount <= 3)
-		return "moderate";
-	if (aCount <= 4)
-		return "high";
-	return "very high";
+public str getComplexityUT(int aCount, int mCalls) {
+	if (aCount > 0) {
+		real res = toReal(aCount) / toReal(mCalls);
+		if (res >= 4.0) 
+			return "++";
+		if (res >= 2.0)
+			return "+";
+		if (res >= 1.0)
+			return "o";
+		if (res >= 0.5)
+			return "-";
+	}	
+	return "--";
 }

@@ -3,13 +3,15 @@
 
 ## Contributors:
  - Nicolae Marian Popa
- - Terry van Walen (10428232)
+ - Terry van Walen
 
 ## Metrics:
  - Volume
  - Cyclomatic Complexity
  - Unit size
  - Code duplication
+ - Unit interfacing
+ - Unit testing
 
 ## Volume
 We calculate volume by eliminating any text which is not code and then counting how many lines are left.
@@ -23,7 +25,7 @@ Steps for each file:
 
 ### From numbers to score
 
-| Rank | MY       | Java     |
+| Rank | MY       | Java     | 
 | ---- |:--------:|:--------:|
 |  ++  | 0-8      | 0-66     |
 |  +   | 8-30     | 66-246   |
@@ -61,9 +63,9 @@ The algorithm starts with a 1 and then adds 1 for each of the following:
 
 
 ## Unit size
-We calculate unit size in the same iteration over the AST tree as the cyclomatic complexity.
+We calculate unit size in the same iteration over the AST tree as the cyclomatic complexity. 
 We take the method body by reading the source code specified by the src attribute of each node, and then clean the method body using the same steps as in the volume metric.
-Finally, the unit size is obtained by counting the number of lines left in the body.
+Finally, the unit size is obtained by counting the number of lines left in the body. 
 
 ### From numbers to score
 CC - cyclomatic complexity score
@@ -83,9 +85,11 @@ CC - cyclomatic complexity score
 |  --  | -        | -    | -         |
 
 ## Code duplication
-We calculate code duplication as the percentage of all code that occurs more than once in equal code blocks of at least 6 lines.
-When comparing code lines, we ignore leading spaces. So, if a single line is repeated many times, but the lines before and after differ every time, we do not count it as duplicated.
-If however, a group of 6 lines appears unchanged in more than one place, we count it as duplicated. Apart from removing leading spaces, the duplication we measure is an exact string matching duplication.
+We calculate code duplication as the percentage of all code that occurs more than once in equal code blocks of at least 6 lines. 
+When comparing code lines, we trim whitespace. If a single line is repeated many times, but the lines before and after differ every time, we do not count it as duplicated.
+If however, a group of 6 lines appears unchanged in more than one place, we count it as duplicated. Apart from removing whitespace, the duplication we measure is an exact string matching duplication. We also count the original lines so two identical files would yield a duplication score of 100%.
+
+What we don't understand from the paper is why not all whitespace is removed from every line because this will yield more duplicated blocks and doesn't take that much longer. Next we would not count the original lines because it's not really fair as a number representing code duplication but it is useful for looking up which lines are part of duplicated code so the programmer can decide what to keep.
 
 | Rank | duplication |
 | ---- |:-----------:|
@@ -97,7 +101,7 @@ If however, a group of 6 lines appears unchanged in more than one place, we coun
 
 ## Unit interfacing
 Unit interfacing can negatively impact maintainability, as units with a high number of parameters are harder to instantiate because more knowledge about the context and about each parameters is required. The area of the maintainability index where unit interfacing plays a role is reusability.
-We calculate unit interfacing by counting how many methods are in each risk category based on the table below.
+We calculate unit interfacing by counting how many methods are in each risk category based on the table below. 
 
 ### From numbers to score
 UI - number of parameters of a method
@@ -113,12 +117,15 @@ UI - number of parameters of a method
 Method calls contribute to code coverage.
 We calculate unit testing by counting how many method calls are in each method and how many assert statements there are. They should be kind of similar, because method calls contribute to code coverage and assert conditions test behavior.
 
-### From numbers to score - still TODO
-UT - number of parameters of a method
+### From numbers to score
+UT = AC / FC where:
+FC: function calls
+AC: assert statements
 
-| UT    | Risk evaluation             |
-| ----- |:---------------------------:|
-| ???   | simple, without much risk   |
-| ???   | more complex, moderate risk |
-| ???   | complex, high risk          |
-| ???   | untestable, very high risk  |
+| Rank | UT    |
+| ---- |:-----:|
+|  ++  | >4    |
+|  +   | 2-4   |
+|  o   | 1-2   |
+|  -   | 0.5-1 |
+|  --  | <0.5  |

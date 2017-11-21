@@ -76,6 +76,22 @@ public list[str] linesOfCodeC(loc location) {
 	return cleanLines;
 }
 
+/**
+* Returns the grade according to the number of lines of code
+*/
+public str getGradeLOC(int linesOfCode) {
+	linesOfCode = linesOfCode / 1000;
+	if (linesOfCode <= 66) 
+		return "++";
+	if (linesOfCode <= 246)
+		return "+";
+	if (linesOfCode <= 665)
+		return "o";
+	if (linesOfCode <= 1310)
+		return "-";
+	return "--";
+}
+
 public str cleanLine(str line) {
 	int pos = findFirst(line, "//");
 	if (pos > -1)
