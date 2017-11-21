@@ -56,7 +56,6 @@ public str computeUT(loc project) {
 	} 
 	println("No test methods! Booh!");
 	return "--";
-	
 }
 
 private map[str, int] getEmptyComplexityMap() {
@@ -88,13 +87,13 @@ public str getComplexityUT(int aCount, int mCalls) {
 	if (aCount > 0) {
 		real res = toReal(aCount) / toReal(mCalls);
 		if (res >= 4.0) 
-			return "++";
+			return "simple";
 		if (res >= 2.0)
-			return "+";
+			return "moderate";
 		if (res >= 1.0)
-			return "o";
-		if (res >= 0.5)
-			return "-";
+			return "high";
+		if (res <= 0.5)
+			return "very high";
 	}	
-	return "--";
+	return "very high";
 }

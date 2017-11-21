@@ -117,6 +117,7 @@ public int computeCC(Statement statements, int noOfThrows) {
 			CC += 2 + countExpressions(condition);
 		}
 		case \case(Expression expression): {
+			//should check if there are statements under the case
 			CC += 1 + countExpressions(expression);
 		}
 		case defaultCase(): {
@@ -137,12 +138,12 @@ public int computeCC(Statement statements, int noOfThrows) {
 		case \break(): {	
 			CC += 1;
 		}
-		case \continue(): {
-			CC += 1;
-		}
-		case \continue(str label): {
-			CC += 1;
-		}
+		//case \continue(): {
+		//	CC += 1;
+		//}
+		//case \continue(str label): {
+		//	CC += 1;
+		//}
 		case \try(Statement body, list[Statement] catchClauses, Statement \finally): {
 			// zero for try, then add one for each catch clause and one for finally
 			CC += size(catchClauses) + 1;
