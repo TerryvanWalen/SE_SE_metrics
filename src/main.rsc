@@ -20,8 +20,8 @@ public void main() {
 	datetime st = now();
 	println("*****START*****");
   	
-	loc project = |project://smallsql0.21_src|;
-	//loc project = |project://hsqldb-2.3.1|;
+	//loc project = |project://smallsql0.21_src|;
+	loc project = |project://hsqldb-2.3.1|;
 	//loc project = |project://rascal|; 
 	//loc project = |project://smallsql0.21_src|;
 
@@ -62,7 +62,6 @@ public void main() {
 	Duration elapsedTime = createDuration(st, end);
 	println("");
 	println("Analysis duration: <elapsedTime[4]> minutes and <elapsedTime[5]> seconds");
-	println("duration(int years, int months, int days, int hours, int minutes, int seconds, int milliseconds)");
 	println("*****END*****");
 }
 
