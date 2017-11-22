@@ -87,11 +87,13 @@ The algorithm starts with a 1 and then adds 1 for each of the following:
 We calculate unit size in the same iteration over the AST tree as the cyclomatic complexity. 
 We take the method body by reading the source code specified by the src attribute of each node, and then clean the method body using the same steps as in the volume metric.
 Finally, the unit size is obtained by counting the number of lines left in the body. 
+
 We got the thresholds from the paper:
 *Tiago L.Alvesm Christiaan Ypma, Joost Visser: Deriving Metric Thresholds from Benchmark Data*
 
 ### From numbers to score
 CC - cyclomatic complexity score
+
 | CC    | Risk evaluation             |
 | ----- |:---------------------------:|
 | 1-30  | simple, without much risk   |
@@ -125,6 +127,7 @@ What we don't understand from the paper is why not all whitespace is removed fro
 ## Unit interfacing
 Unit interfacing can negatively impact maintainability, as units with a high number of parameters are harder to instantiate because more knowledge about the context and about each parameters is required. The area of the maintainability index where unit interfacing plays a role is reusability.
 We calculate unit interfacing by counting how many methods are in each risk category based on the table below. 
+
 We got the thresholds from the paper:
 *Tiago L. Alves, Jose Pedro Correia, Joost Visser: Benchmark-based Aggregation of Metrics to Ratings*
 
