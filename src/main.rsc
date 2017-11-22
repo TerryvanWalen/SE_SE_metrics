@@ -45,7 +45,7 @@ public void main() {
 	println("Unit testing score: <report["UT"]>");
 	println("Unit interfacing score: <report["UI"]>");
 	
-	int analys = (scoreToInt(report["Vol"]) + scoreToInt(report["Dup"]) + scoreToInt(report["US"]) + scoreToInt(report["US"])) / 4;
+	int analys = (scoreToInt(report["Vol"]) + scoreToInt(report["Dup"]) + scoreToInt(report["US"]) + scoreToInt(report["UT"])) / 4;
 	int change = (scoreToInt(report["CC"]) + scoreToInt(report["Dup"])) / 2;
 	int stabil = scoreToInt(report["UT"]);
 	int testab = (scoreToInt(report["CC"]) + scoreToInt(report["US"]) + scoreToInt(report["UT"])) / 3;
@@ -58,6 +58,7 @@ public void main() {
 	println("Stability: <intToScore(stabil)>");
 	println("Testability: <intToScore(testab)>");
 	println("Reusability: <intToScore(reusab)>");
+	println("Maintainability(overall): <intToScore((analys + change + stabil + testab + reusab) / 5)>");
 				
 
 	datetime end = now();
