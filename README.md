@@ -198,7 +198,35 @@ Line 3 and line 4 on the other hand are not interpreted as duplicate lines becau
 We do include imports in our duplication score because there is no clear reason to disregard them. It could certainly be argued that they are not part of the code but it could also be that programmers just copy paste the imports from a previous file without checking if they are really needed and this could be found with this metric, therefore we do include the imports.
 
 ##### Brackets
-We do include brackets in our duplication score simply because removing them causes different problems and we are aiming for a simple and fast algorithm.
+We do include individual brackets as lines of code simply because we are aiming for a simple and fast algorithm to detect copy-paste code. This could result in false positives for cases that include a lot of brackets like a case where 6 if statements are nested while at some other point another nested if statement also ends with 6 lines of closing brackets. In the example below the closing brackets will be counted as duplicate lines. But again it could be argued that finding this lines is desirable behaviour.
+```java
+if (a==b) {
+  if (a==c) {
+    if (a==d) {
+      if (a==e) {
+        if (a==f) {
+          if (a==g) {
+              int a = b;
+          }  
+        }  
+      }  
+    }  
+  }  
+}
+if (b==a) {
+  if (b==c) {
+    if (b==d) {
+      if (b==e) {
+        if (b==f) {
+          if (b==g) {
+              int b = a;
+          }  
+        }  
+      }  
+    }  
+  }  
+}
+```
 
 ##### Block duplication, not line duplication
 In the next example the duplication score is 0%, even though line b appears three times. The metric is only looking at blocks of code that are duplicated. So if a single line is repeated many times, but the lines before or after differ every time, we do not count it as duplicated.
