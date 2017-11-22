@@ -25,14 +25,14 @@ Things to consider:
  - One-line block comments
    - We tackle this by removing them using regular expressions
  - Code before and after block comments: 
- ```java
- /**
- * comment
- */code
- code/**
- * comment
- */
- ```
+```java
+/**
+* comment
+*/code
+code/**
+* comment
+*/
+```
 
 Another way of counting volume is the following, which has much nicer code but it also much slower:
 We calculate volume by eliminating any text which is not code and then counting how many lines are left.
@@ -110,11 +110,35 @@ US - Unit Size score
 |  --  | -        | -    | -         |
 
 ## Code duplication
+Code duplication is calculated as the percentage of all the lines of code that occur more than once in blocks of at leat 6 consecutive lines of code.
+
+```
+int a = 1;
+int a = 2;
+int a = 3;
+int a = 4;
+int a = 5;
+
+```
+
+```
+int a = 2;
+int a = 3;
+int a = 4;
+int a = 5;
+int z = 6
+```
+
+
+
 We calculate code duplication as the percentage of all code that occurs more than once in equal code blocks of at least 6 lines. 
 When comparing code lines, we first trime the lines. If a single line is repeated many times, but the lines before and after differ every time, we do not count it as duplicated. There have to be at least 6 consecutive lines that are repeated. If this happens we count them as duplicated lines. Apart from removing whitespace, the duplication we measure is an exact string matching duplication. We also count the original lines so two identical files would yield a duplication score of 100%.
 
 What we would like to add to this metric is to first remove all whitespace from the lines because differences in whitespace shouldn't be regarded as different lines. For example: int i = 2; and int i  = 2;.
 Next we would exclude the original lines from the metric. It doesn't seem fair to punish the code twice for one duplication.
+
+To determine code duplication we also want to know where the duplicated code resides. 
+
 
 | Rank | duplication |
 | ---- |:-----------:|
