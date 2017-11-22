@@ -14,6 +14,27 @@
  - Unit testing
 
 ## Volume
+We calculate volume by iterating through each file and for every line we determine whether it's a line of code or not.
+Things to consider:
+ - Empty lines
+ - Line comments
+ - Block comments
+   - Mark the beginning of the block comment
+   - Mark the end of the block comment
+   - Everything between the two positions is not code
+ - One-line block comments
+   - We tackle this by removing them using regular expressions
+ - Code before and after block comments: 
+ ```java
+ /**
+ * comment
+ */code
+ code/**
+ * comment
+ */
+ ```
+
+Another way of counting volume is the following, which has much nicer code but it also much slower:
 We calculate volume by eliminating any text which is not code and then counting how many lines are left.
 Steps for each file:
  - Replace any strings "..." with the * character, in order to avoid identifying any code-like text in them
@@ -67,8 +88,12 @@ We calculate unit size in the same iteration over the AST tree as the cyclomatic
 We take the method body by reading the source code specified by the src attribute of each node, and then clean the method body using the same steps as in the volume metric.
 Finally, the unit size is obtained by counting the number of lines left in the body. 
 
+We got the thresholds from the paper:
+*Tiago L.Alvesm Christiaan Ypma, Joost Visser: Deriving Metric Thresholds from Benchmark Data*
+
 ### From numbers to score
 CC - cyclomatic complexity score
+
 | CC    | Risk evaluation             |
 | ----- |:---------------------------:|
 | 1-30  | simple, without much risk   |
@@ -103,6 +128,9 @@ What we don't understand from the paper is why not all whitespace is removed fro
 Unit interfacing can negatively impact maintainability, as units with a high number of parameters are harder to instantiate because more knowledge about the context and about each parameters is required. The area of the maintainability index where unit interfacing plays a role is reusability.
 We calculate unit interfacing by counting how many methods are in each risk category based on the table below. 
 
+We got the thresholds from the paper:
+*Tiago L. Alves, Jose Pedro Correia, Joost Visser: Benchmark-based Aggregation of Metrics to Ratings*
+
 ### From numbers to score
 UI - number of parameters of a method
 
@@ -116,6 +144,7 @@ UI - number of parameters of a method
 ## Unit testing
 Method calls contribute to code coverage.
 We calculate unit testing by counting how many method calls are in each method and how many assert statements there are. They should be kind of similar, because method calls contribute to code coverage and assert conditions test behavior.
+TODO: find a good reasoning behind the scoring
 
 ### From numbers to score
 UT = AC / FC where:
