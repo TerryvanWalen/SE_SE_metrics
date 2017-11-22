@@ -20,13 +20,14 @@ public map[str, str] compute(int volume, loc project) {
 	int separate = 0;
 	visit (asts) {
 		case stn:\method(Type \return, str name, list[Declaration] parameters, list[Expression] exceptions, Statement impl): {
-			cc = computeCC(impl, size(exceptions));
+			cc = computeCC(stn, size(exceptions));
 	
 			methodSize = size(linesOfCodeC(stn.src));
 			complexityCC = getComplexityCC(cc);
 			complexityUS = getComplexityUS(methodSize);
 			resultUS[complexityUS] += methodSize;
 			resultCC[complexityCC] += methodSize;
+			//println("method <name> has complexity <cc>");
 		}
 	}
 	
@@ -103,41 +104,48 @@ private str getComplexityUS(int us) {
 // Loops: for, while, do-while, break, and continue(?).
 // Operators: &&, ||, ? and : <- still TODO
 // Exceptions: catch, finally, throw, or throws clause.
-public int computeCC(Statement statements, int noOfThrows) {
-	//println("number of throws clauses: <noOfThrows>");
+public int computeCC(Declaration statements, int noOfThrows) {
 	int CC = 1;
-	CC += noOfThrows;
+	//CC += noOfThrows;
 	visit(statements) {
 		case \if(Expression condition, Statement thenBranch): {
 			//one for the if and then one for each && and ||
+			//println("if");
 			CC += 1 + countExpressions(condition);
 		}	
 		case \if(Expression condition, Statement thenBranch, Statement elseBranch): {
 			//one for the if, one for the else and then one for each && and ||
+			//println("if with else");
 			CC += 2 + countExpressions(condition);
 		}
 		case \case(Expression expression): {
-			//should check if there are statements under the case ?? 
+			//should check if there are statements under the case ??
+			//println("case"); 
 			CC += 1 + countExpressions(expression);
 		}
 		case defaultCase(): {
+			//println("default");
 			CC += 1;
 		}		
 		case \for(list[Expression] initializers, Expression condition, list[Expression] updaters, Statement body): {
+			//println("for");
 			CC += 1 + countExpressions(condition);
 		}
 		case \for(list[Expression] initializers, list[Expression] updaters, Statement body): {
+			//println("for");
 			CC += 1;
 		}
 		case \while(Expression condition, Statement body): {
+			//println("while");
 			CC += 1 + countExpressions(condition);
 		}
 		case \do(Statement body, Expression condition): {
+			//println("do");
 			CC += 1 + countExpressions(condition);
 		}
-		case \break(): {	
-			CC += 1;
-		}
+		//case \break(): {	
+		//	CC += 1;
+		//}
 		//case \continue(): {
 		//	CC += 1;
 		//}
@@ -146,12 +154,15 @@ public int computeCC(Statement statements, int noOfThrows) {
 		//}
 		case \try(Statement body, list[Statement] catchClauses, Statement \finally): {
 			// zero for try, then add one for each catch clause and one for finally
+			//println("try with everything");
 			CC += size(catchClauses) + 1;
 		}
 		case \try(Statement body, list[Statement] catchClauses): {
+			//println("try with catches!");
 			CC += size(catchClauses);
 		}
 		case \throw(Expression expression): {
+			//println("throw");
 			CC += 1;
 		}
 	}
