@@ -10,7 +10,7 @@ import DateTime;
 
 
 import codeLines;
-import duplicationFaster;
+import duplicationFasterer;
 import cyclomaticComplexity;
 import unitInterfacing;
 import unitTesting;
