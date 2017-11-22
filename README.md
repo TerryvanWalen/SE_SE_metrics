@@ -240,8 +240,14 @@ int d = 3;
 int b = 1;
 int e = 4;
 ```
-##### results based on the example Projects
-Assuming the files are clean (no comments and blank lines).
+##### Results based on the example Projects
+Assuming the files are clean (no comments and blank lines). Calculating the duplication score takes an average of 0.86 ± 0.01 seconds for the SmallSql project and 15.7 ± 0.4 seconds for the HsqDB project.
+
+| Project  | 1   | 2   | 3   | 4   | 5   || avg (s) | stdev |
+| -
+| SmallSql | 0.868 | 0.864 | 0.860 | 0.845 | 0.848 || 0.86 | 0.01 |
+| HsqlDB   | 15.35 | 15.92 | 15.25 | 16.11 | 15.94 || 15.7 | 0.4 |
+
 
 
 ##### The rank we assign based on the duplication score
