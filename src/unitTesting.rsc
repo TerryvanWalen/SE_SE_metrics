@@ -17,9 +17,11 @@ public str computeUT(loc project) {
 	set[Declaration] testClasses = {};
 	visit (asts) {
 		case cl:\class(str name, list[Type] extends, list[Type] implements, list[Declaration] body): {
-			//println("Class name is <name>");
-			if (endsWith(name, "Test"))
-				testClasses += cl;
+			//println("Class name is <name> location: <cl.src.parent.file>");
+			if (cl.src.parent.file == "test" || endsWith(name, "Test")) {
+					testClasses += cl;
+			}
+			
 		}
 	}
 	
@@ -74,7 +76,7 @@ private str getGrade(map[str, int] resultMap) {
 		return "+";
 	if (resultMap["moderate"] <= 40 && resultMap["high"] <= 10 && resultMap["very high"] == 0)
 		return "o";
-	if (resultMap["moderate"] <= 50 || resultMap["high"] <= 15 || resultMap["very high"] <= 5)
+	if (resultMap["moderate"] <= 50 && resultMap["high"] <= 15 && resultMap["very high"] <= 5)
 		return "-";
 	return "--";
 }
@@ -84,7 +86,7 @@ private str getGrade(map[str, int] resultMap) {
 * TODO: return complexity based on both params
 */
 public str getComplexityUT(int aCount, int mCalls) {
-	if (aCount > 0) {
+	if (mCalls > 0) {
 		real res = toReal(aCount) / toReal(mCalls);
 		if (res >= 4.0) 
 			return "simple";

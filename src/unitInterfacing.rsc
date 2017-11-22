@@ -48,7 +48,7 @@ private str getGrade(map[str, int] resultMap) {
 		return "+";
 	if (resultMap["moderate"] <= 40 && resultMap["high"] <= 10 && resultMap["very high"] == 0)
 		return "o";
-	if (resultMap["moderate"] <= 50 || resultMap["high"] <= 15 || resultMap["very high"] <= 5)
+	if (resultMap["moderate"] <= 50 && resultMap["high"] <= 15 && resultMap["very high"] <= 5)
 		return "-";
 	return "--";
 }
