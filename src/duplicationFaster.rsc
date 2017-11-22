@@ -12,7 +12,9 @@ import lang::java::jdt::m3::AST;
 import codeLines;
 
 public str computeDup(map[loc, list[str]] codeBase, int volume) {
-	real dup = (computeDup(codeBase) / toReal(volume)) * 100;
+	int duplicates = computeDup(codeBase); 
+	real dup = (duplicates / toReal(volume)) * 100;
+	print("Duplication for <volume> lines of code:\n<duplicates> recurring  lines, <round(dup, 0.1)> percent\n\n");
 	return ["++", "+", "o", "-", "--"][(0 | it + 1 | x <- [3, 5, 10, 20], dup >= x)];;
 }
 

@@ -128,7 +128,7 @@ public list[str] removeLineComments(list[str] input) {
 
 public str replaceStrings(str s) {
 	return visit(s) {
-		case /\"<match:.*>\"/ => "\"<replaceAll(match, "*", "X")>\""
+		case /\"<match:.*>\"/ => "\"<replaceAll(match, "*", "[*]")>\""
 	}
 }
 
