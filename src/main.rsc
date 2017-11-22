@@ -20,19 +20,19 @@ public void main() {
 	datetime st = now();
 	println("*****START*****");
   	
-	loc project = |project://smallsql0.21_src2|;
+	//loc project = |project://smallsql0.21_src2|;
 	//loc project = |project://hsqldb-2.3.1|;
 	//loc project = |project://rascal|; 
-	//loc project = |project://smallsql0.21_src|;
+	loc project = |project://smallsql0.21_src|;
 
 	M3 model = createM3FromEclipseProject(project);
 	map[loc, list[str]] codeBase = getCleanCodePerFile(files(model));
 	int volume  = locInCodeBase(codeBase);
 	map[str,str] report = ();
 	
-	//println("<volume> lines of code");
-	//report["Vol"] = getGradeLOC(volume);//volume in lines of code
-	//report += compute(volume, project);//adds CC (cyclomati) and US(unit size) keys
+	println("<volume> lines of code");
+	report["Vol"] = getGradeLOC(volume);//volume in lines of code
+	report += compute(volume, project);//adds CC (cyclomati) and US(unit size) keys
 	report["Dup"] = computeDup(codeBase, volume);//code duplication
 	report["UT"] = computeUT(project);//unit testing
 	report["UI"] = computeUI(project);//unit interfacing
