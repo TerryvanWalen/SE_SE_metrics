@@ -194,6 +194,11 @@ Line 3 and line 4 on the other hand are not interpreted as duplicate lines becau
 3. int b = 1;
 4. int b =  1;
 ```
+##### Imports
+We do include imports in our duplication score because there is no clear reason to disregard them. It could certainly be argued that they are not part of the code but it could also be that programmers just copy paste the imports from a previous file without checking if they are really needed and this could be found with this metric, therefore we do include the imports.
+
+##### Brackets
+We do include brackets in our duplication score simply because removing them causes different problems and we are aiming for a simple and fast algorithm.
 
 ##### Block duplication, not line duplication
 In the next example the duplication score is 0%, even though line b appears three times. The metric is only looking at blocks of code that are duplicated. So if a single line is repeated many times, but the lines before or after differ every time, we do not count it as duplicated.
@@ -207,7 +212,11 @@ int d = 3;
 int b = 1;
 int e = 4;
 ```
+##### results based on the example Projects
+Assuming the files are clean (no comments and blank lines).
 
+
+##### The rank we assign based on the duplication score
 | Rank | duplication |
 | ---- |:-----------:|
 |  ++  | 0-3%        |
