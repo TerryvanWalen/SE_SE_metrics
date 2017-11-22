@@ -48,6 +48,7 @@ public void main() {
 	int change = (scoreToInt(report["CC"]) + scoreToInt(report["Dup"])) / 2;
 	int stabil = scoreToInt(report["UT"]);
 	int testab = (scoreToInt(report["CC"]) + scoreToInt(report["US"]) + scoreToInt(report["UT"])) / 3;
+	int reusab = (scoreToInt(report["US"]) + scoreToInt(report["UI"])) / 2;
 	
 	println();
 	println("Report:");
@@ -55,7 +56,7 @@ public void main() {
 	println("Changeability: <intToScore(change)>");
 	println("Stability: <intToScore(stabil)>");
 	println("Testability: <intToScore(testab)>");
-	println("Reusability: <report["UI"]>");
+	println("Reusability: <intToScore(reusab)>");
 				
 
 	datetime end = now();

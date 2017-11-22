@@ -98,10 +98,10 @@ private str getComplexityUS(int us) {
 // Computes the Cyclomatic Complexity of a method
 // Based on: https://www.leepoint.net/principles_and_practices/complexity/complexity-java-method.html
 // Start with a CC of 1 and then add 1 for each of the following:
-// Returns: Each return that isn't the last statement of a method. Still TODO
+// Returns: Each return that isn't the last statement of a method. Still TODO?
 // Selection: if, else, case, default.
-// Loops: for, while, do-while, break, and continue.
-// Operators: &&, ||, ?, and :
+// Loops: for, while, do-while, break, and continue(?).
+// Operators: &&, ||, ? and : <- still TODO
 // Exceptions: catch, finally, throw, or throws clause.
 public int computeCC(Statement statements, int noOfThrows) {
 	//println("number of throws clauses: <noOfThrows>");
@@ -117,7 +117,7 @@ public int computeCC(Statement statements, int noOfThrows) {
 			CC += 2 + countExpressions(condition);
 		}
 		case \case(Expression expression): {
-			//should check if there are statements under the case
+			//should check if there are statements under the case ?? 
 			CC += 1 + countExpressions(expression);
 		}
 		case defaultCase(): {
