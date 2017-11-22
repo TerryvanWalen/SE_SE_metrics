@@ -5,6 +5,15 @@
  - Nicolae Marian Popa
  - Terry van Walen
 
+## SIG Evaluation Criteria
+
+|               | Volume | Duplication | Unit Size | Unit complexity | Unit interfacing |
+| --------------|:------:|:-----------:|:---------:|:---------------:|:----------------:|
+| Analysability | x      | x           | x         |                 |                  |
+| Modifiability |        | x           |           | x               |                  |
+| Testability   | x      |             |           | x               |                  |
+| Reusability   |        |             | x         |                 | x                |
+
 ## Metrics:
  - Volume
  - Cyclomatic Complexity
@@ -35,15 +44,23 @@ code/**
 */
 ```
 
-Another way of counting volume is the following, which has much nicer code but it also much slower:
-We calculate volume by eliminating any text which is not code and then counting how many lines are left.
+Another way of counting volume is the following, which has much nicer code but it also much slower.
+
+Calculate volume by eliminating any text which is not code and then counting how many lines are left.
 Steps for each file:
- - Replace any * in strings with the string [*], in order to avoid identifying any multiline comments in them
- - Convert the list of rows to a single string, while still keeping newline(\n) characters
+ - Replace all strings with \* in order to avoid identifying any multiline comments in them: "any string like this" -> "\*"
+ - Convert the list of rows to a single string, while still keeping newline characters(\n)
  - Remove block comments with regular expressions
  - Convert back to a list of rows by splitting between the newline(\n) character
  - Remove blank lines
  - Remove line comments
+
+#### Validation
+Testing was done by keeping a separate Eclipse project with a single class but which tried to cover all corner cases of this metric.
+To validate our results our results we used two external tools:
+ - cloc-1.74
+   - During the development process we found that cloc does not cover the case illustrated in the code above, where a line of code occurs right after a block comment ends, but on the same line.
+ - LocMetrics
 
 ### From numbers to score
 
@@ -60,10 +77,9 @@ Steps for each file:
 ## Cyclomatic complexity
 We calculate cyclomatic complexity by visiting every method in the AST tree of the project and then computing the corresponding CC number for the method body.
 The algorithm starts with a 1 and then adds 1 for each of the following:
- - Returns: TODO: Each return that isn't the last statement of a method
  - Selection: if, else, case, default
  - Loops: for, while, do-while, break, and continue
- - Operators: &&, || TODO: ?, and :
+ - Operators: &&, ||, ? and :
  - Exceptions: catch, finally, either throw or throws clause
 
 ### From numbers to score
@@ -211,7 +227,7 @@ We got the thresholds from the paper:
 ### From numbers to score
 UI - number of parameters of a method
 
-| UT    | Risk evaluation             |
+| UI    | Risk evaluation             |
 | ----- |:---------------------------:|
 | <=2   | simple, without much risk   |
 | <=3   | more complex, moderate risk |
@@ -219,14 +235,17 @@ UI - number of parameters of a method
 | >4    | untestable, very high risk  |
 
 ## Unit testing
-Method calls contribute to code coverage.
-We calculate unit testing by counting how many method calls are in each method and how many assert statements there are. They should be kind of similar, because method calls contribute to code coverage and assert conditions test behavior.
-TODO: find a good reasoning behind the scoring
+Method calls contribute to code coverage, while assert statements contribute to behavior testing.
+We calculate unit testing by computing the ratio between the number of method calls and the number of assert statements. Counting the two values is done by visiting the AST tree.
+
+The hsqldb project scores very low on unit testing, because it uses JUnit and all assert statements are encapsulated.
 
 ### From numbers to score
-UT = AC / FC where:
-FC: function calls
-AC: assert statements
+Our reasoning is that a system which has a similar number of assert statements and method calls (ratio is 1 to 2) falls in the neutral area, as there can be at least one assert per function call. But this does not mean that this ratio can't be achieved by writing many asserts which deal with one function call and ignore the others. Having more than double asserts puts the system in the + area, while having more than 4 times asserts as function calls is what we consider the best situation.
+
+Paper *Mauricio Finavaro Aniche, Gustavo Ansaldi Oliva, Marco Aurélio Gerosa: What Do The Asserts in a Unit Test Tell Us About Code Quality? A Study on Open Source and Industrial Projects* finds **that there is no correlation between the number of asserts and code quality, but the number of asserted object does.** This is interesting and kind of makes sense because this way empty or irrelevant assert statements are eliminated. Thus, as some further development we could consider finding a way to see if assert statements really check relevant information, and filter the irrelevant ones. But this also requires to define what is relevant information in the context of a unit test.
+
+UT = AC / FC where: FC: function calls and AC: assert statements
 
 | Rank | UT    |
 | ---- |:-----:|
