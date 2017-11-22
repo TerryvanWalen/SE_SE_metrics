@@ -37,7 +37,7 @@ Things to consider:
 Another way of counting volume is the following, which has much nicer code but it also much slower:
 We calculate volume by eliminating any text which is not code and then counting how many lines are left.
 Steps for each file:
- - Replace any strings "..." with the * character, in order to avoid identifying any code-like text in them
+ - Replace any * in strings with the string [*], in order to avoid identifying any multiline comments in them
  - Convert the list of rows to a single string, while still keeping newline(\n) characters
  - Remove block comments with regular expressions
  - Convert back to a list of rows by splitting between the newline(\n) character
