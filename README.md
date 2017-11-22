@@ -46,13 +46,13 @@ Steps for each file:
 
 ### From numbers to score
 
-| Rank | MY       | Java     | 
-| ---- |:--------:|:--------:|
-|  ++  | 0-8      | 0-66     |
-|  +   | 8-30     | 66-246   |
-|  o   | 30-80    | 246-665  |
-|  -   | 80-160   | 665-1310 |
-|  --  | >160     | >1310    |
+| Rank | MY       | Java (KLOC) | 
+| ---- |:--------:|:-----------:|
+|  ++  | 0-8      | 0-66        |
+|  +   | 8-30     | 66-246      |
+|  o   | 30-80    | 246-665     |
+|  -   | 80-160   | 665-1310    |
+|  --  | >160     | >1310       |
 
 ### We compute cyclomatic complexity and unit size for each unit in the code, which a single method.
 
@@ -111,10 +111,10 @@ CC - cyclomatic complexity score
 
 ## Code duplication
 We calculate code duplication as the percentage of all code that occurs more than once in equal code blocks of at least 6 lines. 
-When comparing code lines, we trim whitespace. If a single line is repeated many times, but the lines before and after differ every time, we do not count it as duplicated.
-If however, a group of 6 lines appears unchanged in more than one place, we count it as duplicated. Apart from removing whitespace, the duplication we measure is an exact string matching duplication. We also count the original lines so two identical files would yield a duplication score of 100%.
+When comparing code lines, we first trime the lines. If a single line is repeated many times, but the lines before and after differ every time, we do not count it as duplicated. There have to be at least 6 consecutive lines that are repeated. If this happens we count them as duplicated lines. Apart from removing whitespace, the duplication we measure is an exact string matching duplication. We also count the original lines so two identical files would yield a duplication score of 100%.
 
-What we don't understand from the paper is why not all whitespace is removed from every line because this will yield more duplicated blocks and doesn't take that much longer. Next we would not count the original lines because it's not really fair as a number representing code duplication but it is useful for looking up which lines are part of duplicated code so the programmer can decide what to keep.
+What we would like to add to this metric is to first remove all whitespace from the lines because differences in whitespace shouldn't be regarded as different lines. For example: int i = 2; and int i  = 2;.
+Next we would exclude the original lines from the metric. It doesn't seem fair to punish the code twice for one duplication.
 
 | Rank | duplication |
 | ---- |:-----------:|
