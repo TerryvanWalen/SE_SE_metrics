@@ -16,14 +16,15 @@ import unitInterfacing;
 import unitTesting;
 
 
+
 public void main() {
 	datetime st = now();
 	println("*****START*****");
   	
-	//loc project = |project://smallsql0.21_src|;
-	loc project = |project://hsqldb-2.3.1|;
-	//loc project = |project://rascal|; 
 	//loc project = |project://smallsql0.21_src2|;
+	//loc project = |project://hsqldb-2.3.1|;
+	//loc project = |project://rascal|; 
+	loc project = |project://smallsql0.21_src|;
 
 	M3 model = createM3FromEclipseProject(project);
 	map[loc, list[str]] codeBase = getCleanCodePerFile(files(model));
