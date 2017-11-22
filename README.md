@@ -92,9 +92,9 @@ We got the thresholds from the paper:
 *Tiago L.Alvesm Christiaan Ypma, Joost Visser: Deriving Metric Thresholds from Benchmark Data*
 
 ### From numbers to score
-CC - cyclomatic complexity score
+US - Unit Size score
 
-| CC    | Risk evaluation             |
+| US    | Risk evaluation             |
 | ----- |:---------------------------:|
 | 1-30  | simple, without much risk   |
 | 30-44 | more complex, moderate risk |
