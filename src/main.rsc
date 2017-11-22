@@ -34,29 +34,29 @@ public void main() {
 	//report["Vol"] = getGradeLOC(volume);//volume in lines of code
 	//report += compute(volume, project);//adds CC (cyclomati) and US(unit size) keys
 	report["Dup"] = computeDup(codeBase, volume);//code duplication
-	//report["UT"] = computeUT(project);//unit testing
-	//report["UI"] = computeUI(project);//unit interfacing
-	//
-	//println("Volume score: <report["Vol"]>");
-	//println("Duplication score: <report["Dup"]>");
-	//println("Unit size score: <report["US"]>");
-	//println("Cyclomatic complexity score: <report["CC"]>");
-	//println("Unit testing score: <report["UT"]>");
-	//println("Unit interfacing score: <report["UI"]>");
-	//
-	//int analys = (scoreToInt(report["Vol"]) + scoreToInt(report["Dup"]) + scoreToInt(report["US"]) + scoreToInt(report["US"])) / 4;
-	//int change = (scoreToInt(report["CC"]) + scoreToInt(report["Dup"])) / 2;
-	//int stabil = scoreToInt(report["UT"]);
-	//int testab = (scoreToInt(report["CC"]) + scoreToInt(report["US"]) + scoreToInt(report["UT"])) / 3;
-	//
-	//println();
-	//println("Report:");
-	//println("Analysability: <intToScore(analys)>");
-	//println("Changeability: <intToScore(change)>");
-	//println("Stability: <intToScore(stabil)>");
-	//println("Testability: <intToScore(testab)>");
-	//println("Reusability: <report["UI"]>");
-	//			
+	report["UT"] = computeUT(project);//unit testing
+	report["UI"] = computeUI(project);//unit interfacing
+	
+	println("Volume score: <report["Vol"]>");
+	println("Duplication score: <report["Dup"]>");
+	println("Unit size score: <report["US"]>");
+	println("Cyclomatic complexity score: <report["CC"]>");
+	println("Unit testing score: <report["UT"]>");
+	println("Unit interfacing score: <report["UI"]>");
+	
+	int analys = (scoreToInt(report["Vol"]) + scoreToInt(report["Dup"]) + scoreToInt(report["US"]) + scoreToInt(report["US"])) / 4;
+	int change = (scoreToInt(report["CC"]) + scoreToInt(report["Dup"])) / 2;
+	int stabil = scoreToInt(report["UT"]);
+	int testab = (scoreToInt(report["CC"]) + scoreToInt(report["US"]) + scoreToInt(report["UT"])) / 3;
+	
+	println();
+	println("Report:");
+	println("Analysability: <intToScore(analys)>");
+	println("Changeability: <intToScore(change)>");
+	println("Stability: <intToScore(stabil)>");
+	println("Testability: <intToScore(testab)>");
+	println("Reusability: <report["UI"]>");
+				
 
 	datetime end = now();
 	Duration elapsedTime = createDuration(st, end);
