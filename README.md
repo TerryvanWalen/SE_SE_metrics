@@ -124,19 +124,19 @@ The first method is chosen primarily because it is useful for the programmer to 
 
 ```java
 //File 1:
-   int a = 1;
-*. int b = 2;
-*. int c = 3;
-*. int d = 4;
-*. int e = 5;
+  int a = 1;
+* int b = 2;
+* int c = 3;
+* int d = 4;
+* int e = 5;
 
 
 //File 2:
-*. int b = 2;
-*. int c = 3;
-*. int d = 4;
-*. int e = 5;
-   int z = 6;
+* int b = 2;
+* int c = 3;
+* int d = 4;
+* int e = 5;
+  int z = 6;
 ```
 
 ##### What to do with non-code
