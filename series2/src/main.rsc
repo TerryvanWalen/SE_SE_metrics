@@ -18,10 +18,17 @@ public void main() {
 	//loc project = |project://smallsql0.21_src|;
 	M3 model = createM3FromEclipseProject(project);
 	set[Declaration] asts = createAstsFromEclipseProject(project, true);
-	detectClones(asts);
+	int cloneType = 2;
+	printClones(detectClones(asts, cloneType));
+	//visit(asts) {
+	//	case x:\block(_): {
+	//		if (x@src?)
+	//			println(x.src);
+	//	}
+	//}
 	
 	
-	
-	
+	datetime en = now();
+	println(en - st);
 	println("******END******");
 }
