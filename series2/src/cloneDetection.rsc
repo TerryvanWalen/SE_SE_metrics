@@ -13,9 +13,9 @@ import String;
 /**
 *	Detects clones using the basic algorithm
 */
-public list[tuple[loc, loc]] detectClones(set[Declaration] asts, int cloneType) {
+public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 	println("Detecting clones..");
-	int massThreshold = 30;
+	int massThreshold = 50;
 	real similarityThreshold = 1.0;
 	clones = ();
 	map[node, lrel[node, loc]] buckets = ();
@@ -37,7 +37,7 @@ public list[tuple[loc, loc]] detectClones(set[Declaration] asts, int cloneType) 
 		}
 	}
 	println("Nodes hashed to buckets..");
-	printBuckets(buckets);
+	//printBuckets(buckets);
 	
 	for (bucket <- buckets) {
 		nodesList = buckets[bucket];
@@ -46,7 +46,7 @@ public list[tuple[loc, loc]] detectClones(set[Declaration] asts, int cloneType) 
 		pairs = [<nodesList[i], nodesList[j]> | i <- [0..size(nodesList)], j <- [i..size(nodesList)], nodesList[i][1] != nodesList[j][1]];		
 		for (<x,y> <- pairs) {
 			sim = nodeSimilarity(cleanNode(x[0]), cleanNode(y[0]));
-			println("similarity for <x[0].src> and <y[0].src> is <sim>");
+			//println("similarity for <x[0].src> and <y[0].src> is <sim>");
 			if (sim >= similarityThreshold) {
 				//for each member of x remove it from the clones
 				visit(x[0]) {	
@@ -66,8 +66,45 @@ public list[tuple[loc, loc]] detectClones(set[Declaration] asts, int cloneType) 
 		}
 	}
 	
-	//printClones(cloneClasses);
-	return cloneClasses;
+	return applyTrans(cloneClasses);;
+}
+
+public list[set[loc]] applyTrans(lrel[loc, loc] origClones) {
+	list[set[loc]] res = [];
+	for (<a,b> <- origClones) {
+		res = addCloneToRes(res, <a,b>);
+	}
+	return res;
+}
+
+list[set[loc]] addCloneToRes(list[set[loc]] clones, tuple[loc, loc] b) {	
+	int i0 = -1, i1 = -1;
+	int i = 0;
+	for (clone <- clones) {
+		if (b[0] in clone) {
+			i0 = i;
+		}
+		
+		if (b[1] in clone) {
+			i1 = i;
+		}
+		i += 1;
+	}
+	
+	if (i0 == i1 && i0 > -1) return clones;	
+	
+	if (i0 > -1 && i1 > -1) {//merge two
+		clones[i0] += clones[i1];
+		clones = delete(clones, i1);
+	} else if (i0 > -1) {
+		clones[i0] += {b[0],b[1]};
+	} else if (i1 > -1) {
+		clones[i1] += {b[0],b[1]};
+	} else {
+		clones += [{b[0],b[1]}];
+	}
+		
+	return clones;
 }
 
 public map[node, lrel[node, loc]] hashNode(node x, map[node, lrel[node, loc]] buckets, loc ll) {
@@ -93,11 +130,11 @@ public list[tuple[loc, loc]] removeChilds(list[tuple[loc, loc]] clones, node n) 
 	return [<a,b> | <a,b> <- clones, a != n.src, b != n.src];
 }
 
-public void printClones(list[tuple[loc, loc]] clones) {
+public void printClones(list[set[loc]] clones) {
 	println("Clones found: ");
-	for (<a, b> <- clones) {
-		println(a);
-		println(b);
+	for (group <- clones) {
+		for (g <- group)
+			println(g);
 		println();
 	}
 }
@@ -135,7 +172,7 @@ private node normalize(node n) {
     	case \method(r, _, p, e, i) => \method(r, "methodName", p, e, i)
     	//case \method(r, _, p, e) => \method(r, "methodName", p, e)
     	case \constructor(_, p, e, i) => \constructor("constructorName", p, e, i)
-    	case \typeParameter(_, e) => \typeParameter("typeParameterName", e)
+    	//case \typeParameter(_, e) => \typeParameter("typeParameterName", e)
     	case \annotationTypeMember(t, _) => \annotationTypeMember(t, "annotationTypeMemberName") 			
     	case \annotationTypeMember(t, _, d) => \annotationTypeMember(t, "annotationTypeMemberName", d)
     	case \parameter(t, _, e) => \parameter(t, "parameterName", e)
