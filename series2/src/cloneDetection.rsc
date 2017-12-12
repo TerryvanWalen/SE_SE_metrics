@@ -82,6 +82,11 @@ public map[node, lrel[node, loc]] hashNode(node x, map[node, lrel[node, loc]] bu
 	return buckets;
 }
 
+/**
+* This cleaning is necessary for hashing nodes into buckets
+* Rascal went from keeping the fields below as annotations to keeping them directly in the structure
+* Two similar pieces of code should hash to the same bucket, but because they have different src values they will be seen as different nodes
+*/
 private node cleanNode(node n) {
 	return visit(n) {
 		case Declaration x : {
