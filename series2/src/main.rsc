@@ -21,9 +21,36 @@ public void main() {
 	int cloneType = 2;
 	printClones(detectClones(asts, cloneType));
 	//visit(asts) {
-	//	case x:\block(_): {
+	//	case x:\method(q,r,t,y,z): {
+	//		println(q);
+	//		println(r);
+	//		println(t);
+	//		println(y);
+	//		println("first case!");
 	//		if (x@src?)
 	//			println(x.src);
+	//		else
+	//			println("no src found for <x>");
+	//	}
+	//	case x:\method(a,b,c,d,e): {
+	//		println(b);
+	//		println("second case!");
+	//		if (x@src?)
+	//			println(x.src);
+	//		else
+	//			println("no src found for <x>");
+	//	}
+	//	case x:\class(q,r,t,y): {
+	//		if (x@src?)
+	//			println(x.src);
+	//		else
+	//			println("no src found for <x>");
+	//	}
+	//	case x:\class(q): {
+	//		if (x@src?)
+	//			println(x.src);
+	//		else
+	//			println("no src found for <x>");
 	//	}
 	//}
 	

@@ -5,6 +5,7 @@ import lang::java::m3::AST;
 import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
+import Node;
 import util::Math;
 import Prelude;
 import String;
@@ -27,7 +28,7 @@ public list[tuple[loc, loc]] detectClones(set[Declaration] asts, int cloneType) 
 			int mass = mass(x);
 			if (mass >= massThreshold && x@src?) {
 				if (cloneType > 1) {
-					buckets = hashNode(normalize(x), buckets, mass, x.src);	
+					buckets = hashNode(normalize(x), buckets, x.src);	
 				} else {
 					buckets = hashNode(x, buckets, mass, x.src);
 				}
@@ -44,11 +45,8 @@ public list[tuple[loc, loc]] detectClones(set[Declaration] asts, int cloneType) 
 	
 		pairs = [<nodesList[i], nodesList[j]> | i <- [0..size(nodesList)], j <- [i..size(nodesList)], nodesList[i][1] != nodesList[j][1]];		
 		for (<x,y> <- pairs) {
-			
-			sim = nodeSimilarity(x[0], y[0]);
-			//println("similarity for <x[0].src> and <y[0].src> is <sim>");
-			//println(x[0]);
-			//println(y[0]);		
+			sim = nodeSimilarity(cleanNode(x[0]), cleanNode(y[0]));
+			println("similarity for <x[0].src> and <y[0].src> is <sim>");
 			if (sim >= similarityThreshold) {
 				//for each member of x remove it from the clones
 				visit(x[0]) {	
@@ -72,13 +70,12 @@ public list[tuple[loc, loc]] detectClones(set[Declaration] asts, int cloneType) 
 	return cloneClasses;
 }
 
-//TODO: at the moment they are hashed by mass. is this correct?
-public map[node, lrel[node, loc]] hashNode(node x, map[node, lrel[node, loc]] buckets, int mass, loc ll) {
-	x = cleanNode(x);
-	if (buckets[x]?)
-		buckets[x] += <x,ll>;
+public map[node, lrel[node, loc]] hashNode(node x, map[node, lrel[node, loc]] buckets, loc ll) {
+	node y = cleanNode(x);
+	if (buckets[y]?)
+		buckets[y] += <x,ll>;
 	else
-		buckets[x] = [<x,ll>];
+		buckets[y] = [<x,ll>];
 	return buckets;
 }
 
@@ -88,32 +85,7 @@ public map[node, lrel[node, loc]] hashNode(node x, map[node, lrel[node, loc]] bu
 * Two similar pieces of code should hash to the same bucket, but because they have different src values they will be seen as different nodes
 */
 private node cleanNode(node n) {
-	return visit(n) {
-		case Declaration x : {
-			x.src = unknownSource;
-			x.decl = unresolvedDecl;
-			x.typ = \any();
-			x.modifiers = [];
-			x.messages = [];
-			insert x;
-		}
-		case Statement x : {
-			x.src = unknownSource;
-			x.decl = unresolvedDecl;
-			insert x;
-		}
-		case Expression x : {
-			x.src = unknownSource;
-			x.decl = unresolvedDecl;
-			x.typ = \any();
-			insert x;
-		}
-		case Type x : {
-			x.name = unresolvedType;
-			x.typ = \any();
-			insert x;
-		}	
-	}
+	return unsetRec(n);
 }
 
 public list[tuple[loc, loc]] removeChilds(list[tuple[loc, loc]] clones, node n) {
@@ -137,10 +109,11 @@ private void printBuckets(map[node, lrel[node, loc]] buckets) {
 		if (size > 0) {
 			println("<size> elements");
 			for (bb <- buckets[bucket]) {
-				if (bb[0]@src?)	
-					println(bb[0].src);
-				else
-					println("no src field: <bb[1]>");
+				println(bb[1]);
+				//if (bb[0]@src?)	
+				//	println(bb[0].src);
+				//else
+				//	println("no src field: <bb[1]>");
 			}
 		}
 	}
