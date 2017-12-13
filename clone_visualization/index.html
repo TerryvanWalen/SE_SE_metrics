@@ -172,9 +172,6 @@ d3.json("data.json?forcerefresh=" +  Math.floor(Math.random() * 9999), function(
 
   cluster(root);
 
-  console.log(root.leaves());
-  console.log(packageImports(root.leaves()));
-
   link = link
     .data(packageImports(root.leaves()))
     .enter().append("path")
