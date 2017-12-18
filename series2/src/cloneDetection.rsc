@@ -9,6 +9,7 @@ import Node;
 import util::Math;
 import Prelude;
 import String;
+import lang::json::IO;
 
 /**
 *	Detects clones using the basic algorithm
@@ -133,10 +134,38 @@ public list[tuple[loc, loc]] removeChilds(list[tuple[loc, loc]] clones, node n) 
 public void printClones(list[set[loc]] clones) {
 	println("Clones found: ");
 	for (group <- clones) {
-		for (g <- group)
+		for (g <- group) {
 			println(g);
+		}
 		println();
 	}
+}
+
+public str toJson(list[set[loc]] clones) {
+	println("Clones found: ");
+		
+	list[map[str, value]] output = [];
+	for (group <- clones) {
+		list[map[str, value]] imports = [];
+		for (g <- group) {
+			map[str, value] im = ();
+			//im["name"] = g.file;
+			im["loc"] = substring(g.uri, findAll(g.uri, "/")[1] + 1);
+			im["name"] = substring(g.uri, findAll(g.uri, "/")[2] + 1) + "_" + toString(g.begin.line) + "-" + toString(g.end.line);
+			im["filename"] = g.file;
+			im["startline"] = g.begin.line;
+			im["endline"] = g.end.line;
+			imports += im;
+		}
+
+		for (int i <- index(imports)) {
+			map[str, value] c = imports[i];
+			c["imports"] = slice(imports, 0, i) + slice(imports, i+1, size(imports)-i-1);
+			output += c;
+		}
+	}
+	
+	return toJSON(output, true);
 }
 
 private void printBuckets(map[node, lrel[node, loc]] buckets) {	
