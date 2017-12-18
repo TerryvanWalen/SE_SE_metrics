@@ -87,16 +87,16 @@
 
 <script>
 
-function buildTab(fn, content) {
+function buildTab(fn, content, ln) {
     const isFirstElement = $('#myTabContent').children().length == 0;
     const propContent = isFirstElement ? "show active" : "fade";
     const propTab     = isFirstElement ? "active" : "";
 
-    console.log("update: " + fn);
+    fn_clean = fn.replace(".", "_");
     $('#myTabContent').append(
       `
-        <div class='tab-pane ${propContent}' id='${fn}' role='tabpanel' aria-labelledby='${fn}-tab'>
-          <!-- <textarea id="txt${fn}" name='${fn}'>${content}</textarea>-->
+        <div class='tab-pane ${propContent}' id='${fn_clean}' role='tabpanel' aria-labelledby='${fn_clean}-tab'>
+          <!-- <textarea id="txt${fn_clean}" name='${fn_clean}'>${content}</textarea>-->
         </div>
       `
     );
@@ -104,39 +104,47 @@ function buildTab(fn, content) {
     $('#myTab').append(
       `
         <li class='nav-item'>
-          <a class='nav-link ${propTab}' id='${fn}-tab' data-toggle='tab' href='#${fn}' role='tab' aria-controls='${fn}' aria-selected='true'>${fn}</a>
+          <a class='nav-link ${propTab}' id='${fn_clean}-tab' data-toggle='tab' href='#${fn_clean}' role='tab' aria-controls='${fn_clean}' aria-selected='true'>${fn}</a>
         </li>
       `
     );
 
-    const mytextarea = document.getElementById(fn);
-    console.log(mytextarea);
+    const mytextarea = document.getElementById(fn_clean);
     var myCodeMirror = CodeMirror(mytextarea, {
       value: content,
       mode:  "text/x-java",
       lineNumbers: true,
       styleSelectedText: true
     });
-    myCodeMirror.markText({line: 3, ch: 0}, {line: 10, ch: 0}, {className: "styled-background"});
-    myCodeMirror.markText({line: 14, ch: 0}, {line: 18, ch: 0}, {className: "styled-background"});
+
+    ln.forEach(function(d) {
+        myCodeMirror.markText({line: d, ch: 0}, {line: d+1, ch: 0}, {className: "styled-background"});
+    });
+
+    // myCodeMirror.markText({line: 14, ch: 0}, {line: 18, ch: 0}, {className: "styled-background"});
 
     setTimeout(function() {
       myCodeMirror.refresh();
     }, 100);
 }
 
+
+
 function buildTabs(files) {
   $('#myTabContent').empty();
   $('#myTab').empty();
+  console.log(files);
 
   const dir = './code/';
   $.each(files, function(f) {
-    const fn = files[f];
+    const fn = f;
+    const ln = files[f];
+
+    console.log(fn, ln);
 
     let content = "";
-    $.get(dir + fn +'.hs', function(data) {
-
-       buildTab(fn, data);
+    $.get(dir + fn, function(data) {
+       buildTab(fn, data, ln);
     }, 'text');
   });
 }
@@ -172,13 +180,10 @@ d3.json("data.json?forcerefresh=" +  Math.floor(Math.random() * 9999), function(
 
   cluster(root);
 
-  console.log(root.leaves());
-  console.log(packageImports(root.leaves()));
-
   link = link
     .data(packageImports(root.leaves()))
     .enter().append("path")
-      .each(function(d) { d.source = d.target = d[0]; })
+      .each(function(d) { d.source = d[0], d.target = d[d.length - 1]; })
       .attr("class", "link")
       .attr("d", line);
 
@@ -196,14 +201,15 @@ d3.json("data.json?forcerefresh=" +  Math.floor(Math.random() * 9999), function(
 });
 
 function mouseclick(d) {
-  let files = [];
-  //console.log("\n---\nk:" + d.data.key);
-  files.push(d.data.key);
+  let files = {};
+  //files.push(d.data.key);
+  files[d.data.key] = d.data.lines;
   link
     .each(function(l) {
       if (l.target === d) {
-        //console.log("s:" + l.source.data.key);
-        files.push(l.source.data.key);
+        //console.log("s:", l.source.data.key, l.source.data.lines);
+        files[l.source.data.key] = l.source.data.lines;
+        // files.push(l.source.data.key);
         return l.source.source = true;
       }
     });
@@ -247,9 +253,24 @@ function packageHierarchy(classes) {
     if (!node) {
       node = map[name] = data || {name: name, children: []};
       if (name.length) {
-        node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
+        // const t1 = find(name);
+        // const t2 = find(name.substring(0, i = name.lastIndexOf(".")));
+        // const t3 = find("");
+        // console.log("ph:", name, t1, t2, t3);
+
+        node.parent = find("");
         node.parent.children.push(node);
-        node.key = name.substring(i + 1);
+        node.key = name;
+
+
+
+        // const i = name.lastIndexOf(".");
+        // const cleanname = name.replace(".", "");
+        // console.log(name, cleanname, i, find(name));
+        // node.parent = find(name);
+        // node.filetype = name.substring(i + 1);
+        // node.parent.children.push(node);
+        // node.key = cleanname;
       }
     }
     return node;
@@ -257,7 +278,6 @@ function packageHierarchy(classes) {
 
   classes.forEach(function(d) {
     find(d.name, d);
-    console.log(d);
   });
 
   return d3.hierarchy(map[""]);
@@ -276,7 +296,8 @@ function packageImports(nodes) {
   // For each import, construct a link from the source to target node.
   nodes.forEach(function(d) {
     if (d.data.imports) d.data.imports.forEach(function(i) {
-      imports.push(map[d.data.name].path(map[i]));
+      console.log("imports", i);
+      imports.push(map[d.data.name].path(map[i.loc]));
     });
   });
 
