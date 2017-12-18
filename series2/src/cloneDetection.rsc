@@ -15,8 +15,8 @@ import String;
 */
 public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 	println("Detecting clones..");
-	int massThreshold = 50;
-	real similarityThreshold = 1.0;
+	int massThreshold = 25;
+	list[real] similarityThreshold = [1.0, 1.0, 1.0, 0.8];
 	clones = ();
 	map[node, lrel[node, loc]] buckets = ();
 	lrel[loc, loc] cloneClasses = [];
@@ -28,7 +28,7 @@ public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 			int mass = mass(x);
 			if (mass >= massThreshold && x@src?) {
 				if (cloneType > 1) {
-					buckets = hashNode(normalize(x), buckets, x.src);	
+					buckets = hashNode(normalize(x), buckets, x.src);//for type 2 and 3 we normalize the nodes
 				} else {
 					buckets = hashNode(x, buckets, mass, x.src);
 				}
@@ -37,7 +37,6 @@ public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 		}
 	}
 	println("Nodes hashed to buckets..");
-	//printBuckets(buckets);
 	
 	for (bucket <- buckets) {
 		nodesList = buckets[bucket];
@@ -46,19 +45,20 @@ public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 		pairs = [<nodesList[i], nodesList[j]> | i <- [0..size(nodesList)], j <- [i..size(nodesList)], nodesList[i][1] != nodesList[j][1]];		
 		for (<x,y> <- pairs) {
 			sim = nodeSimilarity(cleanNode(x[0]), cleanNode(y[0]));
-			//println("similarity for <x[0].src> and <y[0].src> is <sim>");
-			if (sim >= similarityThreshold) {
+			if (sim >= similarityThreshold[cloneType]) {
 				//for each member of x remove it from the clones
 				visit(x[0]) {	
 					case node a: {
-						if (a != x[0] && a@src?)
-							cloneClasses = removeChilds(cloneClasses, a);						
+						if (a != x[0]) {	
+							cloneClasses = removeChilds(cloneClasses, a);
+						}										
 					}
 				}
-				visit(y[0]) {	
-					case node a: {
-						if (a != y[0] && a@src?)
-							cloneClasses = removeChilds(cloneClasses, a);						
+				visit(y[0]) {
+					case node a: {	
+						if (a != y[0]) {
+							cloneClasses = removeChilds(cloneClasses, a);
+						}
 					}
 				}
 				cloneClasses += <x[1], y[1]>;
@@ -66,7 +66,7 @@ public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 		}
 	}
 	
-	return applyTrans(cloneClasses);;
+	return applyTrans(cloneClasses);
 }
 
 public list[set[loc]] applyTrans(lrel[loc, loc] origClones) {
@@ -126,12 +126,14 @@ private node cleanNode(node n) {
 }
 
 public list[tuple[loc, loc]] removeChilds(list[tuple[loc, loc]] clones, node n) {
-	//println("removing for <n.src>");
-	return [<a,b> | <a,b> <- clones, a != n.src, b != n.src];
+	if (n@src?)
+		return [<a,b> | <a,b> <- clones, a != n.src, b != n.src];
+	//println("no src field");
+	return clones;
 }
 
 public void printClones(list[set[loc]] clones) {
-	println("Clones found: ");
+	println("<size(clones)> clones found: ");
 	for (group <- clones) {
 		for (g <- group)
 			println(g);
@@ -147,10 +149,6 @@ private void printBuckets(map[node, lrel[node, loc]] buckets) {
 			println("<size> elements");
 			for (bb <- buckets[bucket]) {
 				println(bb[1]);
-				//if (bb[0]@src?)	
-				//	println(bb[0].src);
-				//else
-				//	println("no src field: <bb[1]>");
 			}
 		}
 	}
@@ -170,9 +168,9 @@ private node normalize(node n) {
     	case \class(_, e, i, b) => \class("class", e, i, b)
     	case \interface(_, e, i, b) => \interface("interfaceName", e, i, b)
     	case \method(r, _, p, e, i) => \method(r, "methodName", p, e, i)
-    	//case \method(r, _, p, e) => \method(r, "methodName", p, e)
+    	case \method(Type r, str s, list[Declaration] p, list[Expression] e) => \method(r, "methodName", p, e)
     	case \constructor(_, p, e, i) => \constructor("constructorName", p, e, i)
-    	//case \typeParameter(_, e) => \typeParameter("typeParameterName", e)
+    	case \typeParameter(_, list[Type] e) => \typeParameter("typeParameterName", e)
     	case \annotationTypeMember(t, _) => \annotationTypeMember(t, "annotationTypeMemberName") 			
     	case \annotationTypeMember(t, _, d) => \annotationTypeMember(t, "annotationTypeMemberName", d)
     	case \parameter(t, _, e) => \parameter(t, "parameterName", e)
