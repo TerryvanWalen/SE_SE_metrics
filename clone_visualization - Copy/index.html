@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <style>
+
+  .node {
+    font: 300 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    fill: #bbb;
+  }
+
+  .node:hover {
+    fill: #000;
+  }
+
+  .link {
+    stroke: steelblue;
+    stroke-opacity: 0.4;
+    fill: none;
+    pointer-events: none;
+  }
+
+  .node:hover,
+  .node--source,
+  .node--target {
+    font-weight: 700;
+  }
+
+  .node--source {
+    fill: #2ca02c;
+  }
+
+  .node--target {
+    fill: #d62728;
+  }
+
+  .link--source,
+  .link--target {
+    stroke-opacity: 1;
+    stroke-width: 2px;
+  }
+
+  .link--source {
+    stroke: #d62728;
+  }
+
+  .link--target {
+    stroke: #2ca02c;
+  }
+
+  #code {
+    float:right;
+    margin: auto 20px;
+    width: 45%;
+    height: 100vh;
+  }
+
+  #code textarea, #code div.CodeMirror {
+    width: 100%;
+    height: 90vh;
+  }
+
+  #code .styled-background {
+    background-color: #ff7;
+  }
+
+  svg {
+    display: inline-block;
+  }
+
+  </style>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+  <script src="codemirror-5.32.0/lib/codemirror.js"></script>
+  <link href="codemirror-5.32.0/lib/codemirror.css" rel="stylesheet">
+  <script src="codemirror-5.32.0/mode/clike/clike.js"></script>
+</head>
+<body>
+
+<!-- show circle -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<div id="code">
+  <ul class="nav nav-tabs" id="myTab" role="tablist"></ul>
+  <div class="tab-content" id="myTabContent"></div>
+</div>
+
+<script>
+
+function buildTab(fn, content) {
+    const isFirstElement = $('#myTabContent').children().length == 0;
+    const propContent = isFirstElement ? "show active" : "fade";
+    const propTab     = isFirstElement ? "active" : "";
+
+    console.log("update: " + fn);
+    $('#myTabContent').append(
+      `
+        <div class='tab-pane ${propContent}' id='${fn}' role='tabpanel' aria-labelledby='${fn}-tab'>
+          <!-- <textarea id="txt${fn}" name='${fn}'>${content}</textarea>-->
+        </div>
+      `
+    );
+
+    $('#myTab').append(
+      `
+        <li class='nav-item'>
+          <a class='nav-link ${propTab}' id='${fn}-tab' data-toggle='tab' href='#${fn}' role='tab' aria-controls='${fn}' aria-selected='true'>${fn}</a>
+        </li>
+      `
+    );
+
+    const mytextarea = document.getElementById(fn);
+    console.log(mytextarea);
+    var myCodeMirror = CodeMirror(mytextarea, {
+      value: content,
+      mode:  "text/x-java",
+      lineNumbers: true,
+      styleSelectedText: true
+    });
+    myCodeMirror.markText({line: 3, ch: 0}, {line: 10, ch: 0}, {className: "styled-background"});
+    myCodeMirror.markText({line: 14, ch: 0}, {line: 18, ch: 0}, {className: "styled-background"});
+
+    setTimeout(function() {
+      myCodeMirror.refresh();
+    }, 100);
+}
+
+function buildTabs(files) {
+  $('#myTabContent').empty();
+  $('#myTab').empty();
+
+  const dir = './code/';
+  $.each(files, function(f) {
+    const fn = files[f];
+
+    let content = "";
+    $.get(dir + fn +'.hs', function(data) {
+
+       buildTab(fn, data);
+    }, 'text');
+  });
+}
+
+
+
+var diameter = 960,
+    radius = diameter / 2,
+    innerRadius = radius - 120;
+
+var cluster = d3.cluster()
+    .size([360, innerRadius]);
+
+var line = d3.radialLine()
+    .curve(d3.curveBundle.beta(0.85))
+    .radius(function(d) { return d.y; })
+    .angle(function(d) { return d.x / 180 * Math.PI; });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", diameter)
+    .attr("height", diameter)
+  .append("g")
+    .attr("transform", "translate(" + radius + "," + radius + ")");
+
+var link = svg.append("g").selectAll(".link"),
+    node = svg.append("g").selectAll(".node");
+
+d3.json("data.json?forcerefresh=" +  Math.floor(Math.random() * 9999), function(error, classes) {
+  if (error) throw error;
+
+  var root = packageHierarchy(classes)
+      .sum(function(d) { return d.size; });
+
+  cluster(root);
+
+  link = link
+    .data(packageImports(root.leaves()))
+    .enter().append("path")
+      .each(function(d) { d.source = d[0], d.target = d[d.length - 1]; })
+      .attr("class", "link")
+      .attr("d", line);
+
+  node = node
+    .data(root.leaves())
+    .enter().append("text")
+      .attr("class", "node")
+      .attr("dy", "0.31em")
+      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(180)"); })
+      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+      .text(function(d) { return d.data.key; })
+      .on("mouseover", mouseovered)
+      .on("click", mouseclick)
+      .on("mouseout", mouseouted);
+});
+
+function mouseclick(d) {
+  let files = [];
+  //console.log("\n---\nk:" + d.data.key);
+  files.push(d.data.key);
+  link
+    .each(function(l) {
+      if (l.target === d) {
+        //console.log("s:" + l.source.data.key);
+        files.push(l.source.data.key);
+        return l.source.source = true;
+      }
+    });
+  buildTabs(files);
+}
+
+function mouseovered(d) {
+  node
+      .each(function(n) { n.target = n.source = false; });
+
+  link
+      .classed("link--target", function(l) {
+          if (l.target === d) {
+            return l.source.source = true;
+          }
+       })
+    .filter(function(l) { return l.target === d || l.source === d; })
+      .raise();
+
+  node
+      .classed("node--target", function(n) { return n.target; })
+      .classed("node--source", function(n) { return n.source; });
+}
+
+function mouseouted(d) {
+  link
+      .classed("link--target", false)
+      .classed("link--source", false);
+
+  node
+      .classed("node--target", false)
+      .classed("node--source", false);
+}
+
+// Lazily construct the package hierarchy from class names.
+function packageHierarchy(classes) {
+  var map = {};
+
+  function find(name, data) {
+    var node = map[name], i;
+    if (!node) {
+      node = map[name] = data || {name: name, children: []};
+      if (name.length) {
+        node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
+        node.parent.children.push(node);
+        node.key = name.substring(i + 1);
+      }
+    }
+    return node;
+  }
+
+  classes.forEach(function(d) {
+    find(d.name, d);
+    console.log(d);
+  });
+
+  return d3.hierarchy(map[""]);
+}
+
+// Return a list of imports for the given array of nodes.
+function packageImports(nodes) {
+  var map = {},
+      imports = [];
+
+  // Compute a map from name to node.
+  nodes.forEach(function(d) {
+    map[d.data.name] = d;
+  });
+
+  // For each import, construct a link from the source to target node.
+  nodes.forEach(function(d) {
+    if (d.data.imports) d.data.imports.forEach(function(i) {
+      imports.push(map[d.data.name].path(map[i]));
+    });
+  });
+
+  return imports;
+}
+
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+
+</body>
+</html>
