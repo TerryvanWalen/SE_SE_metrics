@@ -21,8 +21,14 @@ public void main() {
 	M3 model = createM3FromEclipseProject(project);
 	set[Declaration] asts = createAstsFromEclipseProject(project, true);
 	int cloneType = 2;
-	printClones(detectClones(asts, cloneType));
+
+	//printClones(detectClones(asts, cloneType));
 	
+	str jsonClones = toJson(detectClones(asts, cloneType));
+	print(jsonClones);
+	
+	writeFile(|project://se_clone_detection/output/data.json|,jsonClones);
+
 	datetime en = now();
 	println(en - st);
 	println("******END******");

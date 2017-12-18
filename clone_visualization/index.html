@@ -92,7 +92,10 @@ function buildTab(fn, content, ln) {
     const propContent = isFirstElement ? "show active" : "fade";
     const propTab     = isFirstElement ? "active" : "";
 
-    fn_clean = fn.replace(".", "_");
+    fn_clean = fn.replace(/\./g,'_');
+    fn_clean = fn_clean.replace(/\//g,'_') + Math.floor(Math.random() * 9999);
+
+    console.log(fn, fn_clean);
     $('#myTabContent').append(
       `
         <div class='tab-pane ${propContent}' id='${fn_clean}' role='tabpanel' aria-labelledby='${fn_clean}-tab'>
@@ -117,9 +120,9 @@ function buildTab(fn, content, ln) {
       styleSelectedText: true
     });
 
-    ln.forEach(function(d) {
-        myCodeMirror.markText({line: d, ch: 0}, {line: d+1, ch: 0}, {className: "styled-background"});
-    });
+    console.log(ln);
+
+    myCodeMirror.markText({line:ln.startline-1, ch: 0},{line:ln.endline, ch: 0}, {className: "styled-background"});
 
     // myCodeMirror.markText({line: 14, ch: 0}, {line: 18, ch: 0}, {className: "styled-background"});
 
@@ -133,17 +136,19 @@ function buildTab(fn, content, ln) {
 function buildTabs(files) {
   $('#myTabContent').empty();
   $('#myTab').empty();
-  console.log(files);
+  //console.log(files);
 
   const dir = './code/';
   $.each(files, function(f) {
     const fn = f;
-    const ln = files[f];
+    const loc = files[f].loc;
+    const ln = files[f].ln;
 
-    console.log(fn, ln);
+    console.log("f", fn, loc, ln);
 
     let content = "";
-    $.get(dir + fn, function(data) {
+    console.log("g", dir + loc);
+    $.get(dir + loc, function(data) {
        buildTab(fn, data, ln);
     }, 'text');
   });
@@ -153,7 +158,7 @@ function buildTabs(files) {
 
 var diameter = 960,
     radius = diameter / 2,
-    innerRadius = radius - 120;
+    innerRadius = radius - 200;
 
 var cluster = d3.cluster()
     .size([360, innerRadius]);
@@ -202,13 +207,14 @@ d3.json("data.json?forcerefresh=" +  Math.floor(Math.random() * 9999), function(
 
 function mouseclick(d) {
   let files = {};
+  console.log(d);
   //files.push(d.data.key);
-  files[d.data.key] = d.data.lines;
+  files[d.data.name] = {"loc": d.data.loc, "ln": {"startline": d.data.startline,"endline": d.data.endline}};
   link
     .each(function(l) {
       if (l.target === d) {
         //console.log("s:", l.source.data.key, l.source.data.lines);
-        files[l.source.data.key] = l.source.data.lines;
+        files[l.source.data.name] = {"loc": l.source.data.loc, "ln": {"startline": l.source.data.startline,"endline": l.source.data.endline}};
         // files.push(l.source.data.key);
         return l.source.source = true;
       }
@@ -297,7 +303,7 @@ function packageImports(nodes) {
   nodes.forEach(function(d) {
     if (d.data.imports) d.data.imports.forEach(function(i) {
       console.log("imports", i);
-      imports.push(map[d.data.name].path(map[i.loc]));
+      imports.push(map[d.data.name].path(map[i.name]));
     });
   });
 
