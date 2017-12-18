@@ -58,3 +58,10 @@ where SimilarityThreshold is:
 
 ## Visualization
 Terry, do your magic here
+
+## Testing
+We test the following:
+ - Similarity between different types of nodes
+ - Transitive pairs removal
+ - Expected type 1 clones on a small project
+ - Expected type 2 clones on a small project
