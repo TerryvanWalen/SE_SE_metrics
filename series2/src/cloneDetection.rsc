@@ -31,7 +31,7 @@ public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 				if (cloneType > 1) {
 					buckets = hashNode(normalize(x), buckets, x.src);//for type 2 and 3 we normalize the nodes
 				} else {
-					buckets = hashNode(x, buckets, mass, x.src);
+					buckets = hashNode(x, buckets, x.src);
 				}
 				
 			}
@@ -67,7 +67,37 @@ public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 		}
 	}
 	
-	return applyTrans(cloneClasses);
+	return cleanup(applyTrans(cloneClasses));
+}
+
+public list[set[loc]] cleanup(list[set[loc]] input) {
+	list[set[loc]] newInput = [];
+	bool con;
+	for (i <- input) {
+		con = false;
+		for (a <- i) {
+			for (j <- input) {
+				if (i != j) {	
+					for (b <- j) {
+						if (contained(a,b))
+							con = true;
+					}
+				}
+			}
+		}	
+		if (!con)
+			newInput += i;
+	}
+	//printClones(newInput);
+	//println("******************************");
+	return newInput;
+}
+
+public bool contained(loc a, loc b) {
+	if (a.file == b.file)
+		if (a.offset >= b.offset && (a.offset + a.length) <= (b.offset + b.length))
+		return true;
+	return false;
 }
 
 public list[set[loc]] applyTrans(lrel[loc, loc] origClones) {
@@ -199,8 +229,8 @@ private node normalize(node n) {
     	case \enumConstant(_, a) => \enumConstant("enumConstant", a)
     	case \class(_, e, i, b) => \class("class", e, i, b)
     	case \interface(_, e, i, b) => \interface("interfaceName", e, i, b)
-    	case \method(r, _, p, e, i) => \method(r, "methodName", p, e, i)
-    	case \method(Type r, str s, list[Declaration] p, list[Expression] e) => \method(r, "methodName", p, e)
+    	case \method(r, _, p, e, i) => \method(lang::java::jdt::m3::AST::short(), "methodName", p, e, i)
+    	case \method(Type r, str s, list[Declaration] p, list[Expression] e) => \method(lang::java::jdt::m3::AST::short(), "methodName", p, e)
     	case \constructor(_, p, e, i) => \constructor("constructorName", p, e, i)
     	case \typeParameter(_, list[Type] e) => \typeParameter("typeParameterName", e)
     	case \annotationTypeMember(t, _) => \annotationTypeMember(t, "annotationTypeMemberName") 			

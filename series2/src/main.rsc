@@ -28,41 +28,6 @@ public void main() {
 	
 	writeFile(|project://se_clone_detection/output/data.json|,jsonClones);
 
-	//visit(asts) {
-	//	case x:\method(q,r,t,y,z): {
-	//		println(q);
-	//		println(r);
-	//		println(t);
-	//		println(y);
-	//		println("first case!");
-	//		if (x@src?)
-	//			println(x.src);
-	//		else
-	//			println("no src found for <x>");
-	//	}
-	//	case x:\method(a,b,c,d,e): {
-	//		println(b);
-	//		println("second case!");
-	//		if (x@src?)
-	//			println(x.src);
-	//		else
-	//			println("no src found for <x>");
-	//	}
-	//	case x:\class(q,r,t,y): {
-	//		if (x@src?)
-	//			println(x.src);
-	//		else
-	//			println("no src found for <x>");
-	//	}
-	//	case x:\class(q): {
-	//		if (x@src?)
-	//			println(x.src);
-	//		else
-	//			println("no src found for <x>");
-	//	}
-	//}
-	
-	
 	datetime en = now();
 	println(en - st);
 	println("******END******");
