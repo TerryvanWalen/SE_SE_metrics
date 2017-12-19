@@ -16,7 +16,7 @@ import lang::json::IO;
 */
 public list[set[loc]] detectClones(set[Declaration] asts, int cloneType) {
 	println("Detecting clones..");
-	int massThreshold = 25;
+	int massThreshold = 40;
 	list[real] similarityThreshold = [1.0, 1.0, 1.0, 0.8];
 	clones = ();
 	map[node, lrel[node, loc]] buckets = ();
@@ -181,8 +181,6 @@ public str toJson(list[set[loc]] clones) {
 		list[map[str, value]] imports = [];
 		for (g <- group) {
 			map[str, value] im = ();
-			//im["name"] = g.file;
-			
 			list[int] slashes = findAll(g.uri, "/");
 			
 			im["loc"] = substring(g.uri, slashes[1] + 1);
@@ -190,6 +188,7 @@ public str toJson(list[set[loc]] clones) {
 			im["name_read"] = substring(g.uri, slashes[size(slashes) - 2] + 1) + "_" + toString(g.begin.line) + "-" + toString(g.end.line);
 			im["startline"] = g.begin.line;
 			im["endline"] = g.end.line;
+			im["lines"] = [g.begin.line .. g.end.line+1];
 			imports += im;
 		}
 

@@ -87,7 +87,7 @@
 
 <script>
 
-function buildTab(fn, filname, content, ln) {
+function buildTab(fn, filname, content, lnsome) {
     const isFirstElement = $('#myTabContent').children().length == 0;
     const propContent = isFirstElement ? "show active" : "fade";
     const propTab     = isFirstElement ? "active" : "";
@@ -120,9 +120,10 @@ function buildTab(fn, filname, content, ln) {
       styleSelectedText: true
     });
 
-    console.log(ln);
-
-    myCodeMirror.markText({line:ln.startline-1, ch: 0},{line:ln.endline, ch: 0}, {className: "styled-background"});
+    console.log(lnsome);
+    lnsome.forEach(function(d) {
+      myCodeMirror.markText({line:d-1, ch: 0},{line:d, ch: 0}, {className: "styled-background"});
+    });
 
     // myCodeMirror.markText({line: 14, ch: 0}, {line: 18, ch: 0}, {className: "styled-background"});
 
@@ -139,27 +140,55 @@ function buildTabs(files) {
   //console.log(files);
 
   const dir = './code/';
+  let samefiles = true;
+  let lastfile = "";
+  let lines = [];
   $.each(files, function(f) {
-    const fn = f;
     const loc = files[f].loc;
     const ln = files[f].ln;
-    const filname = files[f].name_read;
+    //fconsole.log("check", ln, lastfile, loc, lastfile == loc);
+    if (lastfile != "" && lastfile != loc) {
+      samefiles = false;
+    }
 
-    console.log("f", fn, loc, ln);
+    lastfile = loc;
+    lines = lines.concat(ln);
+  });
 
-    let content = "";
-    console.log("g", dir + loc);
+
+  if (samefiles == true) {
+    const ind = Object.keys(files)[0];
+    console.log("ind", ind);
+    const fn = ind;
+    const loc = files[ind].loc;
+    const filname = files[ind].name_read;
+    const ln = lines;
     $.get(dir + loc, function(data) {
+       console.log("samefiles", dir, loc);
        buildTab(fn, filname, data, ln);
     }, 'text');
-  });
+  }
+  else {
+    $.each(files, function(f) {
+      const fn = f;
+      const loc = files[f].loc;
+      const ln = files[f].ln;
+      const filname = files[f].name_read;
+
+      console.log("f", fn, loc, ln);
+
+      $.get(dir + loc, function(data) {
+         buildTab(fn, filname, data, ln);
+      }, 'text');
+    });
+  }
 }
 
 
 
 var diameter = 960,
     radius = diameter / 2,
-    innerRadius = radius - 200;
+    innerRadius = radius - 240;
 
 var cluster = d3.cluster()
     .size([360, innerRadius]);
@@ -210,12 +239,12 @@ function mouseclick(d) {
   let files = {};
   console.log(d);
   //files.push(d.data.key);
-  files[d.data.name] = {"loc": d.data.loc, "name_read": d.data.name_read, "ln": {"startline": d.data.startline,"endline": d.data.endline}};
+  files[d.data.name] = {"loc": d.data.loc, "name_read": d.data.name_read, "ln": d.data.lines};
   link
     .each(function(l) {
       if (l.target === d) {
-        //console.log("s:", l.source.data.key, l.source.data.lines);
-        files[l.source.data.name] = {"loc": l.source.data.loc, "name_read": l.source.data.name_read, "ln": {"startline": l.source.data.startline,"endline": l.source.data.endline}};
+        console.log("s:", l.source.data.key, l.source.data);
+        files[l.source.data.name] = {"loc": l.source.data.loc, "name_read": l.source.data.name_read, "ln": l.source.data.lines};
         // files.push(l.source.data.key);
         return l.source.source = true;
       }
@@ -293,7 +322,7 @@ function packageImports(nodes) {
   // For each import, construct a link from the source to target node.
   nodes.forEach(function(d) {
     if (d.data.imports) d.data.imports.forEach(function(i) {
-      console.log("imports", i);
+      //console.log("imports", i);
       imports.push(map[d.data.name].path(map[i.name]));
     });
   });
