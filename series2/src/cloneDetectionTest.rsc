@@ -9,18 +9,18 @@ import cloneDetection;
 
 public test bool testSimilarity1() {
 	node n1 = makeNode("n1", [1,2,3]);
-	node n2 = makeNode("n2", [1,2,3]);
+	node n2 = makeNode("n1", [1,2,3]);
 	
 	real sim = nodeSimilarity(n1, n2);
-	return true;
-	if (sim == 1.0) 
-		return true;
-	return false;
+	return sim == 1.0;
 }
 
 public test bool testSimilarity2() {
-	//TODO
-	return true;
+	node n1 = makeNode("n1", [makeNode("n2",[2]),2,3]);
+	node n2 = makeNode("n2", [1,2,3]);
+	
+	real sim = nodeSimilarity(n1, n2);
+	return (sim < 1.0);
 }
 
 public test bool testMass() {
@@ -49,7 +49,7 @@ public test bool testType1() {
 	expected += {|project://smallsql0.21_src2/src/CommandLine.java|(1619,106,<58,8>,<62,9>),
 				 |project://smallsql0.21_src2/src/CommandLine2.java|(609,106,<30,8>,<34,9>),
 				 |project://smallsql0.21_src2/src/CommandLine.java|(384,106,<11,8>,<15,9>)};
-	//printClones(clones);
+
 	return clones == expected;
 }
 
