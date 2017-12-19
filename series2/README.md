@@ -7,10 +7,7 @@
 
 ## How to visualize output
 #### Requisites
-* Nodejs
-* Browser
-* 1080p monitor
-* Rascal
+* Node.js
 
 #### Steps
 * Put project to analyse into __.\clone_visualization\code\\{project_folder}__
