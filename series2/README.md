@@ -6,7 +6,7 @@
  - Terry van Walen
 
 ## How to visualize output
-* Put project into __.\clone_visualization\code\ {project_folder}__
+* Put project to analyse into __.\clone_visualization\code\\{project_folder}__
 * Execute Rascal project on code
   - __Import main;__
   - __main();__
