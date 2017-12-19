@@ -71,7 +71,7 @@ To do the visualization we chose to base our approach on:
 
 In this work a structured Friendwheel is used to communicate the cloned code fragments as nodes and their relations as edges. When selecting parts a node or edge more details are shown like the respective files corresponding to the code fragments.
 
-In our visualization we aim to show both a simplified friendwheel and the corresponding code fragments side by side in the same screen. This visualization technique is more versatile and usable than structure only views because you can immidiately see if a duplication warrants your time or not.
+In our visualization we aim to show both a simplified Friendwheel and the corresponding code fragments side by side in the same screen. This visualization technique is more versatile and usable than structure only views because you can immediately see if a duplication warrants your time or not.
 
 Examples of structure-only views:
 * *R. Koschke, Identifying and Removing Software Clones, in Software Evolution, Springer, 2008*
