@@ -6,6 +6,13 @@
  - Terry van Walen
 
 ## How to visualize output
+#### Requisites
+* Nodejs
+* Browser
+* 1080p monitor
+* Rascal
+
+#### Steps
 * Put project to analyse into __.\clone_visualization\code\\{project_folder}__
 * Execute Rascal project on code
   - __Import main;__
