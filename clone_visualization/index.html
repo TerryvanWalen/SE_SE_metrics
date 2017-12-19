@@ -87,7 +87,7 @@
 
 <script>
 
-function buildTab(fn, content, ln) {
+function buildTab(fn, filname, content, ln) {
     const isFirstElement = $('#myTabContent').children().length == 0;
     const propContent = isFirstElement ? "show active" : "fade";
     const propTab     = isFirstElement ? "active" : "";
@@ -107,7 +107,7 @@ function buildTab(fn, content, ln) {
     $('#myTab').append(
       `
         <li class='nav-item'>
-          <a class='nav-link ${propTab}' id='${fn_clean}-tab' data-toggle='tab' href='#${fn_clean}' role='tab' aria-controls='${fn_clean}' aria-selected='true'>${fn}</a>
+          <a class='nav-link ${propTab}' id='${fn_clean}-tab' data-toggle='tab' href='#${fn_clean}' role='tab' aria-controls='${fn_clean}' aria-selected='true'>${filname}</a>
         </li>
       `
     );
@@ -143,13 +143,14 @@ function buildTabs(files) {
     const fn = f;
     const loc = files[f].loc;
     const ln = files[f].ln;
+    const filname = files[f].name_read;
 
     console.log("f", fn, loc, ln);
 
     let content = "";
     console.log("g", dir + loc);
     $.get(dir + loc, function(data) {
-       buildTab(fn, data, ln);
+       buildTab(fn, filname, data, ln);
     }, 'text');
   });
 }
@@ -199,7 +200,7 @@ d3.json("data.json?forcerefresh=" +  Math.floor(Math.random() * 9999), function(
       .attr("dy", "0.31em")
       .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(180)"); })
       .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-      .text(function(d) { return d.data.key; })
+      .text(function(d) { return d.data.name_read; })
       .on("mouseover", mouseovered)
       .on("click", mouseclick)
       .on("mouseout", mouseouted);
@@ -209,12 +210,12 @@ function mouseclick(d) {
   let files = {};
   console.log(d);
   //files.push(d.data.key);
-  files[d.data.name] = {"loc": d.data.loc, "ln": {"startline": d.data.startline,"endline": d.data.endline}};
+  files[d.data.name] = {"loc": d.data.loc, "name_read": d.data.name_read, "ln": {"startline": d.data.startline,"endline": d.data.endline}};
   link
     .each(function(l) {
       if (l.target === d) {
         //console.log("s:", l.source.data.key, l.source.data.lines);
-        files[l.source.data.name] = {"loc": l.source.data.loc, "ln": {"startline": l.source.data.startline,"endline": l.source.data.endline}};
+        files[l.source.data.name] = {"loc": l.source.data.loc, "name_read": l.source.data.name_read, "ln": {"startline": l.source.data.startline,"endline": l.source.data.endline}};
         // files.push(l.source.data.key);
         return l.source.source = true;
       }
@@ -267,16 +268,6 @@ function packageHierarchy(classes) {
         node.parent = find("");
         node.parent.children.push(node);
         node.key = name;
-
-
-
-        // const i = name.lastIndexOf(".");
-        // const cleanname = name.replace(".", "");
-        // console.log(name, cleanname, i, find(name));
-        // node.parent = find(name);
-        // node.filetype = name.substring(i + 1);
-        // node.parent.children.push(node);
-        // node.key = cleanname;
       }
     }
     return node;

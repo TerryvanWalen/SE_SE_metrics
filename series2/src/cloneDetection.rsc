@@ -144,7 +144,7 @@ public void printClones(list[set[loc]] clones) {
 }
 
 public str toJson(list[set[loc]] clones) {
-	println("Clones found: ");
+	println("Creating JSON: ");
 		
 	list[map[str, value]] output = [];
 	for (group <- clones) {
@@ -152,9 +152,12 @@ public str toJson(list[set[loc]] clones) {
 		for (g <- group) {
 			map[str, value] im = ();
 			//im["name"] = g.file;
-			im["loc"] = substring(g.uri, findAll(g.uri, "/")[1] + 1);
-			im["name"] = substring(g.uri, findAll(g.uri, "/")[2] + 1) + "_" + toString(g.begin.line) + "-" + toString(g.end.line);
-			im["filename"] = g.file;
+			
+			list[int] slashes = findAll(g.uri, "/");
+			
+			im["loc"] = substring(g.uri, slashes[1] + 1);
+			im["name"] = substring(g.uri, slashes[2] + 1) + "_" + toString(g.begin.line) + "-" + toString(g.end.line);
+			im["name_read"] = substring(g.uri, slashes[size(slashes) - 2] + 1) + "_" + toString(g.begin.line) + "-" + toString(g.end.line);
 			im["startline"] = g.begin.line;
 			im["endline"] = g.end.line;
 			imports += im;
